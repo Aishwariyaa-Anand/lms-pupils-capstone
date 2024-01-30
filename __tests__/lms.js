@@ -8,7 +8,7 @@ let server, agent;
 describe('Learning Management System', () => {
     beforeAll(async () => {
         await db.sequelize.sync({ force: true });
-        server = app.listen(3000, () => {});
+        server = app.listen(4000, () => {});
         agent = request.agent(server);
     });
       
