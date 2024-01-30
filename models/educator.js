@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Educator.hasMany(models.Course, {
+        foreignKey: 'eduId'
+      })
     }
   }
   Educator.init({

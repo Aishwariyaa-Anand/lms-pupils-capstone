@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Page.belongsTo(models.Chapter, {
+        foreignKey: 'chapterId'
+      })
     }
   }
   Page.init({
