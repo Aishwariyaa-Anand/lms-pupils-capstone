@@ -5,6 +5,11 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/", async (request, response) => {
+    console.log("App started");
+    response.send("Hello World");
+});
+
 app.get("/courses", async (request, response) => {
     console.log("Fetching all courses");
 });
