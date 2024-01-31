@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "pretest": "set NODE_ENV=test npx sequelize-cli db:drop && set NODE_ENV=test npx sequelize-cli db:create",
     "test": "jest",
     "prepare": "husky install"
   },
@@ -15,6 +16,12 @@
   "keywords": [
     "lms"
   ],
+  "lint-staged": {
+    "*.js": [
+      "eslint",
+      "prettier --write ."
+    ]
+  },
   "author": "Aishwariyaa <aishwariyaa.anand@gmail.com>",
   "license": "ISC",
   "dependencies": {
