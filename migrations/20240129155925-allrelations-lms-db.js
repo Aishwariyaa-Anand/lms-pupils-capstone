@@ -35,7 +35,13 @@ module.exports = {
     });
 
     //many-to-many relationship btw students and courses
-    await queryInterface.createTable('student_course', {
+    await queryInterface.createTable('studentcourses', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
       studentId: {
         type: Sequelize.DataTypes.INTEGER,
         allowNull: false,

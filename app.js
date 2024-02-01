@@ -5,9 +5,10 @@ const path = require("path");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname,'public')));
 
-const {Course, Chapter, Page} = require('./models');
+const {Course, Chapter, Page, Educator, Student, StudentCourse} = require('./models');
 
 app.set("view engine", "ejs");
 
@@ -17,11 +18,17 @@ app.get("/", async (request, response) => {
 });
 
 app.get("/educator", async (request, response) => {
-    response.render("educator");
+    const courses = await Course.findAll();
+    response.render("educator", {
+        courses,
+    });
 });
 
 app.get("/student", async (request, response) => {
-    response.render("student");
+    const courses = await Course.findAll();
+    response.render("student", {
+        courses,
+    });
 });
 
 app.get("/signout", async (request, response) => {
@@ -36,6 +43,21 @@ app.get("/newpage/:chapterId", async (request, response) => {
     const chapterId = request.params.chapterId;
     response.render("newpage", { chapterId });
 });
+
+app.get("/viewcourse/:courseId", async (request, response) => {
+    const courseId = request.params.courseId;
+    const chapters = await Chapter.findAll({
+        where: { courseId },
+    });
+    const course = await Course.findByPk(courseId);
+    const edu = await Educator.findByPk(course.eduId);
+    response.render("viewcourse", {
+        coursename: course.name,
+        courseId,
+        chapters,
+        eduname: edu.name,
+    })
+})
 
 app.post("/courses", async (request, response) => {
     console.log("Creating a course");
@@ -90,6 +112,31 @@ app.post("/chapters/:chapterId/pages", async (request, response) => {
         response.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+app.post("/enroll/:courseId", async (request, response) => {
+    console.log("Enrolling in a course");
+    try {
+        const courseId = request.params.courseId;
+        const course = await Course.findByPk(courseId);
+        const edu = await Educator.findByPk(course.eduId);
+        const chapters = await Chapter.findAll({
+            where: { courseId },
+        });
+        await StudentCourse.create({
+            studentId: 1,
+            courseId: courseId,
+        });
+        response.render("viewencourse",{
+            courseId,
+            coursename: course.name,
+            eduname: edu.name,
+            chapters,
+        });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ error: "Internal Server Error" });
+    }
+})
 
 app.put("pages/:pageId/markAsCompleted", async (request, response) => {
     console.log("Marking a page as completed");

@@ -21,6 +21,19 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'courseId'
       })
     }
+    
+    static eduName(){
+      return this.sequelize.models.Educator.findOne({
+        attributes: ['name'],
+        where: {
+          eduId: this.eduId,
+        },
+      });
+    }
+
+    static nname(){
+      return this.name;
+    }
   }
   Course.init({
     name: DataTypes.STRING

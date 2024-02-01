@@ -19,16 +19,17 @@
         <section id="avail">
             <p style="text-align: center;" id="avail">Available Courses</p>
             <div class="cards">
-                <div class="card">
-                    <div class="card-header">Python</div>
-                    <div class="card-body">author name</div>
-                    <div class="card-footer">
-                        <form>
-                            <button><a href="#viewcourse">View Course</a></button>
-                            <button type="submit">Enroll</button>
-                        </form>
+                <% courses.forEach(course => { %>
+                    <div class="card">
+                        <div class="card-header"><%= course.name %></div>
+                        <div class="card-footer">
+                            <a href="/viewcourse/<%= course.id %>"><button>View Course</button></a>
+                            <form action="/enroll/<%= course.id %>" method="post">
+                                <button type="submit">Enroll</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                <% }); %>
             </div>
         </section>
     </main>

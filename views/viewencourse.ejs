@@ -19,13 +19,15 @@
 </head>
 <body>
     <header>
-        <h1>Course name</h1>
+        <h1><%= coursename %></h1>
+        <%= eduname %>
     </header>
     <hr>
     <main>
         <h3><u><b>Chapters</b></u></h3>
-        <button class="chapapa">Chapter1 name</button><br><br>
-        <button class="chapapa">Chapter2    name</button><br><br>
+        <% chapters.forEach(chapter => { %>
+          <button class="chapapa" disabled><%= chapter.name %></button><br><br>
+        <% }); %>
     </main>
 </body>
 </html>
