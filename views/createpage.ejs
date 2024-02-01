@@ -7,12 +7,22 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+    <%= chapterId %>
     <h1 class="head">chapter name</h1>
     <div style="text-align: right;"><a href="#">Edit</a>&nbsp;&nbsp;&nbsp;<a href="#">Delete</a></div>
     <br><br><hr>
     <h3><u><b>Pages</b></u></h3>
+    <% if (pages && pages.length > 0) { %>
+        <ul>
+            <% pages.forEach(page => { %>
+                <li><a href="/pages/<%= page.id %>"><%= page.title %></a></li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No pages available for this chapter.</p>
+    <% } %>
     <form>
-        <button type="button">Create a page</button>
+        <a href="/newpage/<%= chapterId %>"><button type="button">Create a page</button></a>
     </form>
 </body>
 </html>

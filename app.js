@@ -11,61 +11,61 @@ const {Course, Chapter, Page} = require('./models');
 
 app.set("view engine", "ejs");
 
-
-
 app.get("/", async (request, response) => {
     console.log("App started");
     response.render("index");
 });
 
-app.get("/courses", async (request, response) => {
-    console.log("Fetching all courses");
+app.get("/educator", async (request, response) => {
+    response.render("educator");
 });
 
-app.get("/courses/:courseId", async (request, response) => {
-    const courseId = request.params.courseId;
-    console.log(`Fetching details for course with ID ${courseId}`);
+app.get("/student", async (request, response) => {
+    response.render("student");
 });
 
-app.get("/courses/:courseId/chapters", async (request, response) => {
-    const courseId = request.params.courseId;
-    console.log(`Fetching all chapters for course with ID ${courseId}`);
+app.get("/signout", async (request, response) => {
+    response.render("index");
 });
 
-app.get("/chapters/:chapterId", async (request, response) => {
+app.get("/createcourse", async (request, response) => {
+    response.render("createcourse");
+});
+
+app.get("/newpage/:chapterId", async (request, response) => {
     const chapterId = request.params.chapterId;
-    console.log(`Fetching details for chapter with ID ${chapterId}`);
-});
-
-app.get("/chapters/:chapterId/pages", async (request, response) => {
-    const chapterId = request.params.chapterId;
-    console.log(`Fetching all pages for chapter with ID ${chapterId}`);
-});
-
-app.get("/pages/:pageId", async (request, response) => {
-    const pageId = request.params.pageId;
-    console.log(`Fetching details for page with ID ${pageId}`);
+    response.render("newpage", { chapterId });
 });
 
 app.post("/courses", async (request, response) => {
     console.log("Creating a course");
     try {
-        const { name } = request.body;
-        const newCourse = await Course.create({ name });
-        response.status(500).json(newCourse);
+        const createdCourse = await Course.create({
+            name: request.body.coursename,
+            eduId: 1,
+        });
+        const courseId = createdCourse.id;
+        response.render("createchapter", { courseId });
     } catch (error) {
         console.error(error);
         response.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-app.post("/courses/:coursesId/chapters", async (request, response) => {
+app.post("/courses/:courseId/chapters", async (request, response) => {
     console.log("Creating a chapter for a course");
     try {
         const courseId = request.params.courseId;
-        const { name, desc } = request.body;
-        const newChapter = await Chapter.create({ name, desc, courseId });
-        response.status(500).json(newChapter);
+        const createdChapter = await Chapter.create({
+            name: request.body.chaptername,
+            desc: request.body.desc,
+            courseId,
+        });
+        const chapterId = createdChapter.id;
+        const pages = await Page.findAll({
+            where: { chapterId },
+        });
+        response.render("createpage", { chapterId, pages });
     } catch (error) {
         console.error(error);
         response.status(500).json({ error: "Internal Server Error" });
@@ -76,9 +76,15 @@ app.post("/chapters/:chapterId/pages", async (request, response) => {
     console.log("Creating a page for a chapter");
     try {
         const chapterId = request.params.chapterId;
-        const { title, content } = request.body;
-        const newPage = await Page.create({ title, content, chapterId });
-        response.status(500).json(newPage);
+        await Page.create({
+            title: request.body.title,
+            content: request.body.content,
+            chapterId,
+        });
+        const pages = await Page.findAll({
+            where: { chapterId },
+        });
+        response.render("createpage", { chapterId, pages });
     } catch (error) {
         console.error(error);
         response.status(500).json({ error: "Internal Server Error" });

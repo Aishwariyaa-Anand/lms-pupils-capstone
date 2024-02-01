@@ -9,11 +9,12 @@
 <body>
     <h1 class="head">Create chapter</h1>
     <br><br>
-    <form>
+    <%= courseId %>
+    <form action="/courses/<%= courseId %>/chapters" method="post">
         <label for="chaptername">What is the name of the chapter?</label><br><br>
         <input name="chaptername" id="chaptername" type="text" style="width: 400px"><br><br>
         <label for="desc">Description</label><br><br>
-        <textarea rows="4" cols="50"></textarea><br><br>
+        <textarea rows="4" cols="50" name="desc"></textarea><br><br>
         <button type="submit">submit</button>
     </form>
 </body>
