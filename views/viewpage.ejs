@@ -5,11 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Course Selection</title>
   <link rel="stylesheet" href="/styles.css">
+  <script>
+    function markPageAsCompleted(pageId, chapId) {
+      fetch(`/pages/${pageId}/markAsCompleted`, {
+          method: "put",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+              "_method": "PUT",
+          })
+      })
+      .then((res) => {
+          if (res.ok) {
+              window.location.reload();
+          }
+      })
+      .catch((err) => console.error(err));
+    }
+  </script>
 </head>
 <body>
-    <h1>Page title</h1>
-    <p>Page content</p>
-    <button type="submit" style="background-color: darkblue;">Mark As Completed</button>
-    <button type="submit">Next</button>
+    <h1 class="head"><%= pagetitle %></h1>
+    <p><%= pagecont %></p>
+    <button onclick="markPageAsCompleted(<%= pageid %>, <%= chap %>); return false;" style="background-color: darkblue;">Mark As Completed</button>
+    <% let nextpg = pageid + 1; %>
+    <a href="/viewpage/<%= nextpg %>/<%= chap %>"><button type="submit">Next</button></a>
 </body>
 </html>

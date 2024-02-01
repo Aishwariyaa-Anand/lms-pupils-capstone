@@ -26,7 +26,7 @@
     <main>
         <h3><u><b>Chapters</b></u></h3>
         <% chapters.forEach(chapter => { %>
-          <button class="chapapa" disabled><%= chapter.name %></button><br><br>
+          <a href="/viewchap/<%= chapter.id%>"><button class="chapapa"><%= chapter.name %></button></a><br><br>
         <% }); %>
     </main>
 </body>

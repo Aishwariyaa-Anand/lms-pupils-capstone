@@ -8,7 +8,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname,'public')));
 
-const {Course, Chapter, Page, Educator, Student, StudentCourse} = require('./models');
+const {Course, Chapter, Page, Educator, Student, studentcourse} = require('./models');
 
 app.set("view engine", "ejs");
 
@@ -53,11 +53,43 @@ app.get("/viewcourse/:courseId", async (request, response) => {
     const edu = await Educator.findByPk(course.eduId);
     response.render("viewcourse", {
         coursename: course.name,
-        courseId,
+        courseid: course.id,
         chapters,
         eduname: edu.name,
     })
-})
+});
+
+app.get("/viewchap/:chapterId", async (request, response) => {
+    const chapterId = request.params.chapterId;
+    const chaps = await Chapter.findByPk(chapterId);
+    const pages = await Page.findAll({
+        where: { chapterId },
+    });
+    response.render("viewchap", {
+        chapname: chaps.name,
+        chapdesc: chaps.desc,
+        pages,
+    })
+});
+
+app.get("/viewpage/:pageId/:chapterId", async (request, response) => {
+    const pageId = request.params.pageId;
+    const chapterId = request.params.chapterId;
+    const page = await Page.findByPk(pageId);
+    if (chapterId == page.chapterId){
+        response.render("viewpage", {
+            pagetitle: page.title,
+            pagecont: page.content,
+            pageid: page.id,
+            chap: page.chapterId,
+        })
+    } else{
+        const courses = await Course.findAll();
+        response.render("student", {
+            courses,
+        })
+    }
+});
 
 app.post("/courses", async (request, response) => {
     console.log("Creating a course");
@@ -122,7 +154,7 @@ app.post("/enroll/:courseId", async (request, response) => {
         const chapters = await Chapter.findAll({
             where: { courseId },
         });
-        await StudentCourse.create({
+        await studentcourse.create({
             studentId: 1,
             courseId: courseId,
         });
@@ -138,15 +170,15 @@ app.post("/enroll/:courseId", async (request, response) => {
     }
 })
 
-app.put("pages/:pageId/markAsCompleted", async (request, response) => {
+app.put("/pages/:pageId/markAsCompleted", async (request, response) => {
     console.log("Marking a page as completed");
     try {
         const pageId = request.params.pageId;
-        const { completed } = request.body;
         const page = await Page.findByPk(pageId);
         if (page) {
             // Update the 'completed' status in the database
-            await page.update({ completed });
+            await page.update({ completed: true });
+            console.log('Page updated successfully');
             response.status(200).json({ message: "Page marked as completed" });
         } else {
             response.status(404).json({ error: "Page not found" });

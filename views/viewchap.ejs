@@ -19,14 +19,15 @@
 </head>
 <body>
     <header>
-        <h1>Chapter name</h1>
-        <p>description of the chapter</p>
+        <h1><%= chapname %></h1>
+        <p><%= chapdesc %></p>
     </header>
     <hr>
     <main>
         <h3><u><b>Pages</b></u></h3>
-        <button class="chapapa">Page1 name</button><br><br>
-        <button class="chapapa">Page2 name</button><br><br>
+        <% pages.forEach(page => { %>
+          <a href="/viewpage/<%= page.id %>/<%= page.chapterId %>"><button class="chapapa"><%= page.title %></button></a><br><br>
+        <% }); %>
     </main>
 </body>
 </html>
