@@ -82,6 +82,7 @@ app.get("/viewpage/:pageId/:chapterId", async (request, response) => {
             pagecont: page.content,
             pageid: page.id,
             chap: page.chapterId,
+            completed: page.completed,
         })
     } else{
         const courses = await Course.findAll();
@@ -172,17 +173,11 @@ app.post("/enroll/:courseId", async (request, response) => {
 
 app.put("/pages/:pageId/markAsCompleted", async (request, response) => {
     console.log("Marking a page as completed");
+    const page = await Page.findByPk(request.params.pageId);
     try {
-        const pageId = request.params.pageId;
-        const page = await Page.findByPk(pageId);
-        if (page) {
-            // Update the 'completed' status in the database
-            await page.update({ completed: true });
-            console.log('Page updated successfully');
-            response.status(200).json({ message: "Page marked as completed" });
-        } else {
-            response.status(404).json({ error: "Page not found" });
-        }
+        const markstatus = await page.markcomplete(request.body.completed);
+        console.log(request.body.completed);
+        response.json(markstatus);
     } catch (error) {
         console.error(error);
         response.status(500).json({ error: "Internal Server Error" });

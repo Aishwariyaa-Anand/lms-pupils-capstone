@@ -12,11 +12,12 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
               "_method": "PUT",
+              "completed": true,
           })
       })
       .then((res) => {
           if (res.ok) {
-              window.location.reload();
+              window.location.href = `/viewpage/${pageId}/${chapId}`;
           }
       })
       .catch((err) => console.error(err));
@@ -26,7 +27,11 @@
 <body>
     <h1 class="head"><%= pagetitle %></h1>
     <p><%= pagecont %></p>
-    <button onclick="markPageAsCompleted(<%= pageid %>, <%= chap %>); return false;" style="background-color: darkblue;">Mark As Completed</button>
+    <% if (completed) { %>
+      <p>This page is completed!</p>
+    <% } else { %>
+      <button onclick="markPageAsCompleted(<%= pageid %>, <%= chap %>); return false;" style="background-color: darkblue;">Mark As Completed</button>
+    <% } %>
     <% let nextpg = pageid + 1; %>
     <a href="/viewpage/<%= nextpg %>/<%= chap %>"><button type="submit">Next</button></a>
 </body>

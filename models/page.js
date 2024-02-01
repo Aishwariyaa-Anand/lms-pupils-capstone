@@ -15,10 +15,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'chapterId'
       })
     }
+
+    markcomplete(complete) {
+      return this.update({ completed: complete });
+    }
   }
   Page.init({
     title: DataTypes.STRING,
-    content: DataTypes.STRING
+    content: DataTypes.STRING,
+    completed: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Page',
