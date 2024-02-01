@@ -1,15 +1,21 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const path = require("path");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname,'public')));
 
 const {Course, Chapter, Page} = require('./models');
 
+app.set("view engine", "ejs");
+
+
+
 app.get("/", async (request, response) => {
     console.log("App started");
-    response.send("Hello World");
+    response.render("index");
 });
 
 app.get("/courses", async (request, response) => {
