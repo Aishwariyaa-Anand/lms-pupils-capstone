@@ -9,7 +9,7 @@ module.exports = {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'educators',
+        model: 'Educators',
         key: 'id',
       },
     });
@@ -19,7 +19,7 @@ module.exports = {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'courses',
+        model: 'Courses',
         key: 'id',
       },
     });
@@ -29,7 +29,7 @@ module.exports = {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'chapters',
+        model: 'Chapters',
         key: 'id',
       },
     });    
