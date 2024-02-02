@@ -42,6 +42,10 @@ app.get("/", async (request, response) => {
 });
 
 app.get("/educator", async (request, response) => {
+    await Educator.create({
+        name: 'abc',
+        email: 'abc',
+    });
     const courses = await Course.findAll();
     response.render("educator", {
         courses,
@@ -50,6 +54,10 @@ app.get("/educator", async (request, response) => {
 
 app.get("/student", async (request, response) => {
     const courses = await Course.findAll();
+    await Student.create({
+        name: 'abc',
+        email: 'abc',
+    });
     response.render("student", {
         courses,
     });
