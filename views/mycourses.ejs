@@ -17,16 +17,19 @@
     <main>
         <section id="avail">
             <div class="cards">
-                <div class="card">
-                    <div class="card-header">Python</div>
-                    <div class="card-body">author name</div>
-                    <div class="card-footer">
-                        <form>
-                            <button>Continue</button>
-                            <button>Completed:0%</button>
-                        </form>
-                    </div>
-                </div>
+                <% courses.forEach(course => { %>
+                    <% if (course.enrolled) { %>
+                        <div class="card">
+                            <div class="card-header"><%= course.name %></div>
+                            <div class="card-footer">
+                                <a href="/viewencourse/<%= course.id %>"><button>Continue</button></a>
+                                <button>Completed:0%</button>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <p>You did not enroll in any course.</p>
+                    <% } %>
+                <% }); %>
             </div>
         </section>
     </main>

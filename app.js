@@ -50,8 +50,25 @@ app.get("/viewcourse/:courseId", async (request, response) => {
         where: { courseId },
     });
     const course = await Course.findByPk(courseId);
+    console.log(course.id);
     const edu = await Educator.findByPk(course.eduId);
     response.render("viewcourse", {
+        coursename: course.name,
+        courseid: course.id,
+        chapters,
+        eduname: edu.name,
+    })
+});
+
+app.get("/viewencourse/:courseId", async (request, response) => {
+    const courseId = request.params.courseId;
+    const chapters = await Chapter.findAll({
+        where: { courseId },
+    });
+    const course = await Course.findByPk(courseId);
+    console.log(course.id);
+    const edu = await Educator.findByPk(course.eduId);
+    response.render("viewencourse", {
         coursename: course.name,
         courseid: course.id,
         chapters,
@@ -72,11 +89,18 @@ app.get("/viewchap/:chapterId", async (request, response) => {
     })
 });
 
+app.get("/mycourses", async (request, response) => {
+    const courses = await Course.findAll();
+    response.render("mycourses", {
+        courses,
+    });
+});
+
 app.get("/viewpage/:pageId/:chapterId", async (request, response) => {
     const pageId = request.params.pageId;
     const chapterId = request.params.chapterId;
     const page = await Page.findByPk(pageId);
-    if (chapterId == page.chapterId){
+    if ((page) && (chapterId == page.chapterId)){
         response.render("viewpage", {
             pagetitle: page.title,
             pagecont: page.content,
@@ -155,6 +179,7 @@ app.post("/enroll/:courseId", async (request, response) => {
         const chapters = await Chapter.findAll({
             where: { courseId },
         });
+        await Course.isenrolled(course.id);
         await studentcourse.create({
             studentId: 1,
             courseId: courseId,

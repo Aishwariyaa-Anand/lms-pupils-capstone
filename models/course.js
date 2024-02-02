@@ -34,9 +34,15 @@ module.exports = (sequelize, DataTypes) => {
     static nname(){
       return this.name;
     }
+
+    static isenrolled(id) {
+      return this.update({ enrolled: true }, { where: { id: id } });
+    }
+
   }
   Course.init({
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    enrolled: DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'Course',

@@ -20,15 +20,17 @@
             <p style="text-align: center;" id="avail">Available Courses</p>
             <div class="cards">
                 <% courses.forEach(course => { %>
-                    <div class="card">
-                        <div class="card-header"><%= course.name %></div>
-                        <div class="card-footer">
-                            <a href="/viewcourse/<%= course.id %>"><button>View Course</button></a>
-                            <form action="/enroll/<%= course.id %>" method="post">
-                                <button type="submit">Enroll</button>
-                            </form>
+                    <% if (!course.enrolled) { %>
+                        <div class="card">
+                            <div class="card-header"><%= course.name %></div>
+                            <div class="card-footer">
+                                <a href="/viewcourse/<%= course.id %>"><button>View Course</button></a>
+                                <form action="/enroll/<%= course.id %>" method="post">
+                                    <button type="submit">Enroll</button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    <% } %>
                 <% }); %>
             </div>
         </section>
