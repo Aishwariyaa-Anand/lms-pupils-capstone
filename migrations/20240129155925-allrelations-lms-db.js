@@ -5,7 +5,7 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     //educators id in course table
-    await queryInterface.addColumn('courses', 'eduId', {
+    await queryInterface.addColumn('Courses', 'eduId', {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -15,7 +15,7 @@ module.exports = {
     });
 
     //courseId in Chapters table
-    await queryInterface.addColumn('chapters', 'courseId', {
+    await queryInterface.addColumn('Chapters', 'courseId', {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -25,7 +25,7 @@ module.exports = {
     });
 
     //chapterId in pages table
-    await queryInterface.addColumn('pages', 'chapterId', {
+    await queryInterface.addColumn('Pages', 'chapterId', {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -42,9 +42,9 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.removeColumn('pages', 'chapterId');
+    await queryInterface.removeColumn('Pages', 'chapterId');
 
-    await queryInterface.removeColumn('chapters', 'courseId');
+    await queryInterface.removeColumn('Chapters', 'courseId');
     /**
      * Add reverting commands here.
      *
