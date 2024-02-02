@@ -23,7 +23,7 @@
                             <div class="card-header"><%= course.name %></div>
                             <div class="card-footer">
                                 <a href="/viewencourse/<%= course.id %>"><button>Continue</button></a>
-                                <button>Completed:0%</button>
+                                <button>Completed: <%= course.completionPercentage.toFixed(2) %>%</button>
                             </div>
                         </div>
                     <% } else { %>
