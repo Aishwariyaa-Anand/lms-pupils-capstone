@@ -167,6 +167,20 @@ app.get("/viewpage/:pageId/:chapterId", async (request, response) => {
     }
 });
 
+app.get("/educourse/:courseId", async (request, response) => {
+    const courseId = request.params.courseId;
+    const course = await Course.findByPk(courseId);
+    const chapters = await Chapter.findAll({
+        where: { courseId },
+    });
+    const pages = await Page.findAll();
+    response.render("educourse", {
+        coursename: course.name,
+        chapters,
+        pages,
+    });
+})
+
 app.post("/courses", async (request, response) => {
     console.log("Creating a course");
     try {
@@ -191,11 +205,12 @@ app.post("/courses/:courseId/chapters", async (request, response) => {
             desc: request.body.desc,
             courseId,
         });
-        const chapterId = createdChapter.id;
+        const chapterid = createdChapter.id;
+        const chapter = await Chapter.findByPk(chapterid);
         const pages = await Page.findAll({
-            where: { chapterId },
+            where: { chapterid },
         });
-        response.render("createpage", { chapterId, pages });
+        response.render("createpage", { chapter, pages });
     } catch (error) {
         console.error(error);
         response.status(500).json({ error: "Internal Server Error" });
@@ -211,10 +226,11 @@ app.post("/chapters/:chapterId/pages", async (request, response) => {
             content: request.body.content,
             chapterId,
         });
+        const chapter = await Chapter.findByPk(chapterId);
         const pages = await Page.findAll({
             where: { chapterId },
         });
-        response.render("createpage", { chapterId, pages });
+        response.render("createpage", { chapter, pages });
     } catch (error) {
         console.error(error);
         response.status(500).json({ error: "Internal Server Error" });

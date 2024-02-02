@@ -18,17 +18,20 @@
   </style>
 </head>
 <body>
-  <%- include('stuheader.ejs') %>
+  <%- include('eduheader.ejs') %>
   <h1><%= coursename %></h1>
-  <%= eduname %>
-  <br><br>
-  <form action="/enroll/<%= courseid %>" method="post">
-    <button type="submit">Enroll</button>
-  </form>
-  <h3><u><b>Chapters</b></u></h3>
   <% chapters.forEach(chapter => { %>
-    <button class="chapapa" disabled><%= chapter.name %></button><br><br>
+    <h2><%= chapter.name %></h2>
+    <%= chapter.desc %>
+    <div style="margin-left: 10px;">
+        <% pages.forEach(page => { %>
+            <% if (page.chapterId == chapter.id ) { %>
+                <h3><%= page.title %></h3>
+                <%= page.content %>
+            <% } %>
+        <% }); %>
+    </div><hr>
   <% }); %>
-  <%- include('stufooter.ejs') %>
+  <%- include('edufooter.ejs') %>
 </body>
 </html>

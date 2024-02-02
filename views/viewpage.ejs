@@ -25,6 +25,7 @@
   </script>
 </head>
 <body>
+    <%- include('stuheader.ejs') %>
     <h1 class="head"><%= pagetitle %></h1>
     <p><%= pagecont %></p>
     <% if (completed) { %>
@@ -34,5 +35,6 @@
     <% } %>
     <% let nextpg = pageid + 1; %>
     <a href="/viewpage/<%= nextpg %>/<%= chap %>"><button type="submit">Next</button></a>
+    <%- include('stufooter.ejs') %>
 </body>
 </html>

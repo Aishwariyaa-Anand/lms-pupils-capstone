@@ -7,36 +7,20 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <header>
-        <h1 class="head">Welcome!</h1>
-        <div style="text-align: right;">
-            <a href="#changepass"><button>Change Password</button><br><br></a>
-            <a href="/signout"><button style="background-color: crimson;" type="button">Signout</button></a>
-        </div>
-        <h3>Administrative actions</h3>
-        <a href="/createcourse"><button>Create a new course</button></a><br><br>
-        <button><a href="#">View Reports</a></button><br><br>
-    </header>
-    <hr>
-    <main>
-        <section id="avail">
-            <p style="text-align: center;" id="avail">Available Courses</p>
-            <div class="cards">
-                <% courses.forEach(course => { %>
-                    <% if (!course.enrolled) { %>
-                        <div class="card">
-                            <div class="card-header"><%= course.name %></div>
-                            <div class="card-footer">
-                                <a href="/viewcourse/<%= course.id %>"><button>View Course</button></a>
-                                <form action="/enroll/<%= course.id %>" method="post">
-                                    <button type="submit">Enroll</button>
-                                </form>
-                            </div>
-                        </div>
-                    <% } %>
-                <% }); %>
-            </div>
-        </section>
-    </main>
+    <%- include('eduheader.ejs') %>
+    <div style="text-align: right;"><a href="/createcourse"><button>Create course</button></a><br><br></div>
+    <p style="text-align: center;" id="avail">My Courses</p>
+    <div class="cards">
+        <% courses.forEach(course => { %>
+            <% if (!course.enrolled) { %>
+                <div class="card">
+                    <div class="card-header"><%= course.name %></div>
+                    <div class="card-footer">
+                        <a href="/educourse/<%= course.id %>"><button>View Course</button></a>
+                    </div>
+                </div>
+            <% } %>
+        <% }); %>
+    </div>
 </body>
 </html>

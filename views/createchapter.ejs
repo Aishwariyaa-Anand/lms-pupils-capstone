@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+    <%- include('eduheader.ejs') %>
     <h1 class="head">Create chapter</h1>
     <br><br>
     <form action="/courses/<%= courseId %>/chapters" method="post">
@@ -16,5 +17,6 @@
         <textarea rows="4" cols="50" name="desc"></textarea><br><br>
         <button type="submit">submit</button>
     </form>
+    <%- include('edufooter.ejs') %>
 </body>
 </html>

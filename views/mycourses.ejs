@@ -7,31 +7,28 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <header>
-        <h1 class="head">Courses enrolled</h1>
-        <div style="text-align: right;">
-            <a href="/signout"><button style="background-color: crimson;" type="submit">Signout</button></a>
-        </div>
-    </header>
-    <hr>
-    <main>
-        <section id="avail">
-            <div class="cards">
-                <% courses.forEach(course => { %>
-                    <% if (course.enrolled) { %>
-                        <div class="card">
-                            <div class="card-header"><%= course.name %></div>
-                            <div class="card-footer">
-                                <a href="/viewencourse/<%= course.id %>"><button>Continue</button></a>
-                                <button>Completed: <%= course.completionPercentage.toFixed(2) %>%</button>
-                            </div>
-                        </div>
-                    <% } else { %>
-                        <p>You did not enroll in any course.</p>
-                    <% } %>
-                <% }); %>
-            </div>
-        </section>
-    </main>
+    <%- include('stuheader.ejs') %>
+    <h1 class="head">Courses enrolled</h1>
+    <div class="cards">
+        <% courses.forEach(course => { %>
+            <% if (course.enrolled) { %>
+                <div class="card">
+                    <div class="card-header"><%= course.name %></div>
+                    <div class="card-body">
+                        <% const completion = course.completionPercentage.toFixed(2); %>
+                        <% if (!isNaN(completion)) { %>
+                            <p>Completed: <%= completion %>%</p>
+                        <% } else { %>
+                            <p>Completed: 0%</p>
+                        <% } %>                        
+                    </div>
+                    <div class="card-footer">
+                        <a href="/viewencourse/<%= course.id %>"><button>Continue</button></a>
+                    </div>
+                </div>
+            <% } %>
+        <% }); %>
+    </div>
+    <%- include('stufooter.ejs') %>
 </body>
 </html>
