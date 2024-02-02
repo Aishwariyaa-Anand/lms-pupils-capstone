@@ -9,7 +9,6 @@
 <body>
     <h1 class="head">Create chapter</h1>
     <br><br>
-    <%= courseId %>
     <form action="/courses/<%= courseId %>/chapters" method="post">
         <label for="chaptername">What is the name of the chapter?</label><br><br>
         <input name="chaptername" id="chaptername" type="text" style="width: 400px"><br><br>
