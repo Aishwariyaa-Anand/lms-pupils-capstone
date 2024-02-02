@@ -179,7 +179,14 @@ app.get("/educourse/:courseId", async (request, response) => {
         chapters,
         pages,
     });
-})
+});
+
+app.get("/createchapter/:chapterId", async (request, response) => {
+    const chapid = request.params.chapterId;
+    const chapter = await Chapter.findByPk(chapid);
+    const courseId = chapter.courseId;
+    response.render("createchapter", { courseId });
+});
 
 app.post("/courses", async (request, response) => {
     console.log("Creating a course");

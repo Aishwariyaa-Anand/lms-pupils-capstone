@@ -24,6 +24,9 @@
     <form>
         <a href="/newpage/<%= chapter.id %>"><button type="button">Create a page</button></a>
     </form>
+    <br><br><div style="text-align: right;">
+        <a href="/createchapter/<%= chapter.id %>"><button>Create another chapter</button></a>
+    </div>
     <%- include('edufooter.ejs') %>
 </body>
 </html>

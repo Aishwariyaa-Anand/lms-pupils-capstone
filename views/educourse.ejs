@@ -23,14 +23,14 @@
   <% chapters.forEach(chapter => { %>
     <h2><%= chapter.name %></h2>
     <%= chapter.desc %>
-    <div style="margin-left: 10px;">
+    <div style="margin-left: 10px;"><ul>
         <% pages.forEach(page => { %>
             <% if (page.chapterId == chapter.id ) { %>
-                <h3><%= page.title %></h3>
-                <%= page.content %>
+                <li><h3><%= page.title %></h3>
+                <%= page.content %></li>
             <% } %>
         <% }); %>
-    </div><hr>
+    </ul></div><hr>
   <% }); %>
   <%- include('edufooter.ejs') %>
 </body>
