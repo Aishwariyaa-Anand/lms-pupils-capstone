@@ -7,7 +7,7 @@ module.exports = {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'students',
+        model: 'Students',
         key: 'id',
       },
     });
@@ -16,7 +16,7 @@ module.exports = {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'courses',
+        model: 'Courses',
         key: 'id',
       },
     });
@@ -29,11 +29,7 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    
-
-    await queryInterface.removeColumn('courses', 'eduId');
-
-    await queryInterface.dropTable('student_course');
+    await queryInterface.dropTable('studentcourses');
     /**
      * Add reverting commands here.
      *
