@@ -5,10 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My LMS</title>
     <link rel="stylesheet" href="/styles.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            width: 50%;
+            vertical-align: middle;
+            text-align: center;
+            padding: 20px;
+        }
+
+        a {
+            color: rgb(79, 79, 248);
+        }
+    </style>
 </head>
 <body>
     <%- include('header.ejs') %>
-    <a href="/educator"><button type="button">Educator</button></a><br><br>
-    <a href="/student"><button type="button">Student</button></a>
+    <br><br><br>
+    <table>
+        <tr>
+            <td>
+                <h3>Sign in as Educator</h3>
+                <from>
+                    <label for="eduemail">Email:</label><br>
+                    <input type="text" name="eduemail" id="eduemail" placeholder="Enter your email"><br><br>
+                    <label for="edupwd">Password:</label><br>
+                    <input type="password" name="edupwd" id="edupwd" placeholder="Enter your password"><br>
+                    <p>Do not have an account? <a href="/edusignup">Sign up</a></p>
+                    <a href="/educator"><button type="button">Sign in</button></a>
+                </from>
+            </td>
+            <td>
+                <h3>Sign in as Student</h3>
+                <from>
+                    <label for="stuemail">Email:</label><br>
+                    <input type="text" name="stuemail" id="stuemail" placeholder="Enter your email"><br><br>
+                    <label for="stupwd">Password:</label><br>
+                    <input type="password" name="stupwd" id="stupwd" placeholder="Enter your password"><br>
+                    <p>Do not have an account? <a href="/stusignup">Sign up</a></p>
+                    <a href="/student"><button type="button">Sign in</button></a>
+                </from>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

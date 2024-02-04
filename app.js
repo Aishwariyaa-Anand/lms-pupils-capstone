@@ -41,6 +41,14 @@ app.get("/", async (request, response) => {
     response.render("index");
 });
 
+app.get("/edusignup", async (request, response) => {
+    response.render("edusignup");
+});
+
+app.get("/stusignup", async (request, response) => {
+    response.render("stusignup");
+});
+
 app.get("/educator", async (request, response) => {
     await Educator.create({
         name: 'abc',

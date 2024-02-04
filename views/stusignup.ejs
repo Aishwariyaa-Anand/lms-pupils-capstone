@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My LMS</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <%- include('header.ejs') %>
+    <br><br><br>
+    <div class="signup">
+    <h3>Sign up as Student</h3>
+    <from>
+        <label for="stuname">Name:</label><br>
+        <input type="text" name="stuname" id="stuname" placeholder="Enter your name"><br><br>
+        <label for="stuemail">Email:</label><br>
+        <input type="email" name="stuemail" id="stuemail" placeholder="Enter your email"><br><br>
+        <label for="stupwd">Password:</label><br>
+        <input type="password" name="stupwd" id="stupwd" placeholder="Enter your password"><br><br>
+        <center><button type="submit">Sign up</button></center>
+    </from>
+    </div>
+</body>
+</html>
