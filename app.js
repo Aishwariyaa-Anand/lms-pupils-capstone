@@ -2,11 +2,88 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require("path");
+app.set("views", path.join(__dirname, "views"));
+const passport = require('passport');
+const connectEnsureLogin = require('connect-ensure-login');
+const session = require('express-session');
+const LocalStrategy = require('passport-local');
+const bcrypt = require('bcrypt');
+const saltRounds= 10;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname,'public')));
+app.use(session({
+    secret: "my-super-secret-key-21728172615261562",
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000
+    }
+  }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use('educator', new LocalStrategy({
+    usernameField: 'eduemail',
+    passwordField: 'edupwd'
+}, (email, password, done) => {
+    Educator.findOne({ where: { email: email } })
+        .then(async (educator) => {
+            if (!educator) {
+                return done(null, false, { message: "Invalid email" });
+            }
+
+            const result = await bcrypt.compare(password, educator.password);
+            if (result) {
+                return done(null, educator);
+            } else {
+                return done(null, false, { message: "Invalid password" });
+            }
+        })
+        .catch((error) => {
+            return done(error);
+        });
+}));
+
+// Passport configuration for Student
+passport.use('student', new LocalStrategy({
+    usernameField: 'stuemail',
+    passwordField: 'stupwd'
+}, (username, password, done) => {
+    Student.findOne({ where: { email: username } })
+        .then(async (student) => {
+            if (!student) {
+                return done(null, false, { message: "Invalid email" });
+            }
+
+            const result = await bcrypt.compare(password, student.password);
+            if (result) {
+                return done(null, student);
+            } else {
+                return done(null, false, { message: "Invalid password" });
+            }
+        })
+        .catch((error) => {
+            return done(error);
+        });
+}));
+
+passport.serializeUser((user, done) => {
+    done(null, { id: user.id, role: user.role }); // Serialize user ID and role
+});
+
+passport.deserializeUser((serializedUser, done) => {
+    const { id, role } = serializedUser;
+    const model = ( role === 'e' ) ? Educator : Student;
+
+    model.findByPk(id)
+        .then(user => {
+            done(null, user)
+        })
+        .catch(error => {
+            done(error, null)
+        });
+});
 
 const {Course, Chapter, Page, Educator, Student, studentcourse} = require('./models');
 
@@ -41,6 +118,11 @@ app.get("/", async (request, response) => {
     response.render("index");
 });
 
+app.get("/login", async (request, response) => {
+    console.log("abcd");
+    response.render("index");
+});
+
 app.get("/edusignup", async (request, response) => {
     response.render("edusignup");
 });
@@ -49,42 +131,34 @@ app.get("/stusignup", async (request, response) => {
     response.render("stusignup");
 });
 
-app.get("/educator", async (request, response) => {
-    await Educator.create({
-        name: 'abc',
-        email: 'abc',
-    });
+app.get("/educator", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const courses = await Course.findAll();
     response.render("educator", {
         courses,
     });
 });
 
-app.get("/student", async (request, response) => {
+app.get("/student", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const courses = await Course.findAll();
-    await Student.create({
-        name: 'abc',
-        email: 'abc',
-    });
     response.render("student", {
         courses,
     });
 });
 
-app.get("/signout", async (request, response) => {
+app.get("/signout", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     response.render("index");
 });
 
-app.get("/createcourse", async (request, response) => {
+app.get("/createcourse", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     response.render("createcourse");
 });
 
-app.get("/newpage/:chapterId", async (request, response) => {
+app.get("/newpage/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const chapterId = request.params.chapterId;
     response.render("newpage", { chapterId });
 });
 
-app.get("/viewcourse/:courseId", async (request, response) => {
+app.get("/viewcourse/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const courseId = request.params.courseId;
     const chapters = await Chapter.findAll({
         where: { courseId },
@@ -100,7 +174,7 @@ app.get("/viewcourse/:courseId", async (request, response) => {
     })
 });
 
-app.get("/viewencourse/:courseId", async (request, response) => {
+app.get("/viewencourse/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const courseId = request.params.courseId;
     const chapters = await Chapter.findAll({
         where: { courseId },
@@ -116,7 +190,7 @@ app.get("/viewencourse/:courseId", async (request, response) => {
     })
 });
 
-app.get("/viewchap/:chapterId", async (request, response) => {
+app.get("/viewchap/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const chapterId = request.params.chapterId;
     const chaps = await Chapter.findByPk(chapterId);
     const pages = await Page.findAll({
@@ -129,7 +203,7 @@ app.get("/viewchap/:chapterId", async (request, response) => {
     })
 });
 
-app.get("/mycourses", async (request, response) => {
+app.get("/mycourses", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     try {
         const courses = await Course.findAll();
 
@@ -155,7 +229,7 @@ app.get("/mycourses", async (request, response) => {
     }
 });
 
-app.get("/viewpage/:pageId/:chapterId", async (request, response) => {
+app.get("/viewpage/:pageId/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const pageId = request.params.pageId;
     const chapterId = request.params.chapterId;
     const page = await Page.findByPk(pageId);
@@ -175,7 +249,7 @@ app.get("/viewpage/:pageId/:chapterId", async (request, response) => {
     }
 });
 
-app.get("/educourse/:courseId", async (request, response) => {
+app.get("/educourse/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const courseId = request.params.courseId;
     const course = await Course.findByPk(courseId);
     const chapters = await Chapter.findAll({
@@ -189,14 +263,79 @@ app.get("/educourse/:courseId", async (request, response) => {
     });
 });
 
-app.get("/createchapter/:chapterId", async (request, response) => {
+app.get("/createchapter/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const chapid = request.params.chapterId;
     const chapter = await Chapter.findByPk(chapid);
     const courseId = chapter.courseId;
     response.render("createchapter", { courseId });
 });
 
-app.post("/courses", async (request, response) => {
+app.post("/edulog", passport.authenticate('educator', {
+    failureRedirect: '/login',
+    //failureFlash: true 
+}), async (request, response) => {
+    response.redirect("/educator");
+});
+
+app.post("/stulog", passport.authenticate('student', {
+    failureRedirect: '/login',
+    //failureFlash: true 
+}), async (request, response) => {
+    console.log("Student login successful");
+    response.redirect("/student");
+});
+
+app.post("/educator", async (request, response) => {
+    console.log("Creating an educator");
+    const hashpwd = await bcrypt.hash(request.body.edupwd, saltRounds)
+    try {
+        const educator = await Educator.create({
+            name: request.body.eduname,
+            email: request.body.eduemail,
+            password: hashpwd,
+        });
+        const courses = await Course.findAll();
+        //const eduId = educator.id;
+        request.login(educator, (error) => {
+            if (error) {
+              console.log(error)
+            }
+        });
+        response.render("educator", {
+            courses,
+        });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.post("/student", async (request, response) => {
+    console.log("Creating a student");
+    const hashpwd = await bcrypt.hash(request.body.stupwd, saltRounds)
+    try {
+        const student = await Student.create({
+            name: request.body.stuname,
+            email: request.body.stuemail,
+            password: hashpwd,
+        });
+        const courses = await Course.findAll();
+        //const eduId = educator.id;
+        request.login(student, (error) => {
+            if (error) {
+              console.log(error)
+            }
+        });
+        response.render("student", {
+            courses,
+        });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.post("/courses", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     console.log("Creating a course");
     try {
         const createdCourse = await Course.create({
@@ -211,7 +350,7 @@ app.post("/courses", async (request, response) => {
     }
 });
 
-app.post("/courses/:courseId/chapters", async (request, response) => {
+app.post("/courses/:courseId/chapters", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     console.log("Creating a chapter for a course");
     try {
         const courseId = request.params.courseId;
@@ -232,7 +371,7 @@ app.post("/courses/:courseId/chapters", async (request, response) => {
     }
 });
 
-app.post("/chapters/:chapterId/pages", async (request, response) => {
+app.post("/chapters/:chapterId/pages", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     console.log("Creating a page for a chapter");
     try {
         const chapterId = request.params.chapterId;
@@ -252,7 +391,7 @@ app.post("/chapters/:chapterId/pages", async (request, response) => {
     }
 });
 
-app.post("/enroll/:courseId", async (request, response) => {
+app.post("/enroll/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     console.log("Enrolling in a course");
     try {
         const courseId = request.params.courseId;
@@ -278,7 +417,7 @@ app.post("/enroll/:courseId", async (request, response) => {
     }
 })
 
-app.put("/pages/:pageId/markAsCompleted", async (request, response) => {
+app.put("/pages/:pageId/markAsCompleted", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     console.log("Marking a page as completed");
     const page = await Page.findByPk(request.params.pageId);
     try {
@@ -291,7 +430,7 @@ app.put("/pages/:pageId/markAsCompleted", async (request, response) => {
     }
 });
 
-app.delete("/pages/:pageId", async (request, response) => {
+app.delete("/pages/:pageId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     console.log("Deleting a page");
     try {
         const pageId = request.params.pageId;
@@ -309,7 +448,7 @@ app.delete("/pages/:pageId", async (request, response) => {
     }
 });
 
-app.delete("/chapters/:chapterId", async (request, response) => {
+app.delete("/chapters/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     console.log("Deleting a chapter");
     try {
         const chapterId = request.params.chapterId;
@@ -327,7 +466,7 @@ app.delete("/chapters/:chapterId", async (request, response) => {
     }
 });
 
-app.delete("/courses/:courseId", async (request, response) => {
+app.delete("/courses/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     console.log("Deleting a course");
     try {
         const courseId = request.params.courseId;

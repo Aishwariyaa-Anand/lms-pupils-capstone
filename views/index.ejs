@@ -30,25 +30,25 @@
         <tr>
             <td>
                 <h3>Sign in as Educator</h3>
-                <from>
+                <form method="post" action="/edulog">
                     <label for="eduemail">Email:</label><br>
                     <input type="text" name="eduemail" id="eduemail" placeholder="Enter your email"><br><br>
                     <label for="edupwd">Password:</label><br>
                     <input type="password" name="edupwd" id="edupwd" placeholder="Enter your password"><br>
-                    <p>Do not have an account? <a href="/edusignup">Sign up</a></p>
-                    <a href="/educator"><button type="button">Sign in</button></a>
-                </from>
+                    <button type="submit">Sign in</button>
+                </form>
+                <p>Do not have an account? <a href="/edusignup">Sign up</a></p>
             </td>
             <td>
                 <h3>Sign in as Student</h3>
-                <from>
+                <form method="post" action="/stulog">
                     <label for="stuemail">Email:</label><br>
                     <input type="text" name="stuemail" id="stuemail" placeholder="Enter your email"><br><br>
                     <label for="stupwd">Password:</label><br>
                     <input type="password" name="stupwd" id="stupwd" placeholder="Enter your password"><br>
-                    <p>Do not have an account? <a href="/stusignup">Sign up</a></p>
-                    <a href="/student"><button type="button">Sign in</button></a>
-                </from>
+                    <button type="submit">Sign in</button>
+                </form>
+                <p>Do not have an account? <a href="/stusignup">Sign up</a></p>
             </td>
         </tr>
     </table>
