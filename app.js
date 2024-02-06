@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const Sequelize = require('sequelize');
 const bodyParser = require('body-parser');
 const path = require("path");
 app.set("views", path.join(__dirname, "views"));
@@ -87,6 +88,20 @@ passport.deserializeUser((serializedUser, done) => {
 
 const {Course, Chapter, Page, Educator, Student, studentcourse} = require('./models');
 
+const isEducator = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next(); // User is an educator
+    }
+    res.status(403).send('Unauthorized'); // User is not an educator
+};
+
+const isStudent = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next(); // User is a student
+    }
+    res.status(403).send('Unauthorized'); // User is not a student
+};
+
 app.set("view engine", "ejs");
 
 // Example function to calculate completion percentage
@@ -131,22 +146,41 @@ app.get("/stusignup", async (request, response) => {
     response.render("stusignup");
 });
 
-app.get("/educator", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+app.get("/educator", connectEnsureLogin.ensureLoggedIn(), isEducator, async (request, response) => {
     const courses = await Course.findAll();
     response.render("educator", {
         courses,
     });
 });
 
-app.get("/student", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
-    const courses = await Course.findAll();
-    response.render("student", {
-        courses,
-    });
+app.get("/student", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
+    try {
+        const studentId = request.user.id;
+        const courses = await Course.findAll({
+            where: {
+                id: {
+                    [Sequelize.Op.notIn]: Sequelize.literal(`(
+                        SELECT courseId FROM studentcourses WHERE studentId = ${studentId}
+                    )`)
+                }
+            }
+        });
+        response.render("student", {
+            courses,
+        });
+    } catch(error) {
+        console.error(error);
+        response.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
-app.get("/signout", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
-    response.render("index");
+app.get("/signout", async (request, response, next) => {
+    request.logout((error) => {
+        if (error){
+            return next(error);
+        }
+        response.redirect("/");
+      })
 });
 
 app.get("/createcourse", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
@@ -203,10 +237,15 @@ app.get("/viewchap/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (requ
     })
 });
 
-app.get("/mycourses", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+app.get("/mycourses", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
     try {
-        const courses = await Course.findAll();
-
+        const studentId = request.user.id; // Assuming the student ID is stored in the user object
+        const courses = await Course.findAll({
+            include: {
+                model: studentcourse,
+                where: { studentId: studentId } // Filter by studentId
+            }
+        });
         // to Calculate progress for each course
         const coursesWithProgress = await Promise.all(
             courses.map(async (course) => {
@@ -249,7 +288,7 @@ app.get("/viewpage/:pageId/:chapterId", connectEnsureLogin.ensureLoggedIn(), asy
     }
 });
 
-app.get("/educourse/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+app.get("/educourse/:courseId", connectEnsureLogin.ensureLoggedIn(), isEducator, async (request, response) => {
     const courseId = request.params.courseId;
     const course = await Course.findByPk(courseId);
     const chapters = await Chapter.findAll({
@@ -391,7 +430,7 @@ app.post("/chapters/:chapterId/pages", connectEnsureLogin.ensureLoggedIn(), asyn
     }
 });
 
-app.post("/enroll/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+app.post("/enroll/:courseId", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
     console.log("Enrolling in a course");
     try {
         const courseId = request.params.courseId;
@@ -401,8 +440,9 @@ app.post("/enroll/:courseId", connectEnsureLogin.ensureLoggedIn(), async (reques
             where: { courseId },
         });
         await Course.isenrolled(course.id);
+        const studentId = request.user.id;
         await studentcourse.create({
-            studentId: 1,
+            studentId: studentId,
             courseId: courseId,
         });
         response.render("viewencourse",{
@@ -417,7 +457,7 @@ app.post("/enroll/:courseId", connectEnsureLogin.ensureLoggedIn(), async (reques
     }
 })
 
-app.put("/pages/:pageId/markAsCompleted", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+app.put("/pages/:pageId/markAsCompleted", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
     console.log("Marking a page as completed");
     const page = await Page.findByPk(request.params.pageId);
     try {
