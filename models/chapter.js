@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'courseId'
       });
       Chapter.hasMany(models.Page, {
-        foreignKey: 'chapterId'
+        foreignKey: 'chapterId',
+        onDelete: 'CASCADE'
       })
     }
   }
