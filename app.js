@@ -85,7 +85,6 @@ async function calculateCompletionPercentage(courseId, studentId) {
             where: { courseId },
         },
     });
-    console.log('a',totalPages,courseId)
 
     const completedPages = await pagecomp.count({
         include: {
@@ -96,11 +95,10 @@ async function calculateCompletionPercentage(courseId, studentId) {
             },
         },
         where: {
-            '$page.chapter.courseId$': courseId,
+            '$Page.chapter.courseId$': courseId,
             studentId: studentId,
         },
     });
-    console.log('b',completedPages)
     const completionPercentage = (completedPages / totalPages) * 100;
     return completionPercentage;
 }
