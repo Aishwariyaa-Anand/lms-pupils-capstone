@@ -515,7 +515,7 @@ app.post("/courses", connectEnsureLogin.ensureLoggedIn(), async (request, respon
         }
         const createdCourse = await Course.create({
             name: request.body.coursename,
-            eduId: 1,
+            eduId: request.user.id,
         });
         const courseId = createdCourse.id;
         response.render("createchapter", { courseId });
@@ -631,6 +631,7 @@ app.delete("/chapters/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (r
         const chapter = await Chapter.findByPk(chapterId);
         if (chapter) {
             // Delete the chapter from the database
+            await Page.destroy({ where: { chapterId } });
             await chapter.destroy();
             response.status(200).json({ message: "Chapter deleted successfully" });
         } else {
@@ -649,8 +650,15 @@ app.delete("/courses/:courseId", connectEnsureLogin.ensureLoggedIn(), async (req
         const course = await Course.findByPk(courseId);
         if (course) {
             // Delete the course from the database
+            const chapters = await Chapter.findAll({ where: { courseId } });
+            // Delete associated pages
+            await Page.destroy({ where: { chapterId: chapters.map(chapter => chapter.id) } });
+
+            //delete associated chapters
+            await Chapter.destroy({ where: { courseId } });
+        
             await course.destroy();
-            response.status(200).json({ message: "Course deleted successfully" });
+            return response.json({ success: true });
         } else {
             response.status(404).json({ error: "Course not found" });
         }
