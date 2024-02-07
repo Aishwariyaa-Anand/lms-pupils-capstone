@@ -458,7 +458,7 @@ app.post('/change-password/:role', async (req, res) => {
             user.password = hashedPassword;
             await user.save();
 
-            if (req.params.role === 'e'){
+            if (user.role === 'e'){
                 // Redirect the user to a success page or send a success response
                 res.redirect('/educator');
             } else {
