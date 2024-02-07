@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       Page.belongsTo(models.Chapter, {
         foreignKey: 'chapterId'
       })
+      Page.hasMany(models.pagecomp, {
+        foreignKey: 'pageId'
+      })
     }
 
     markcomplete(complete) {

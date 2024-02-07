@@ -20,6 +20,22 @@ module.exports = {
         key: 'id',
       },
     });
+    await queryInterface.addColumn('pagecomp', 'pageId', {
+      type: Sequelize.DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Pages',
+        key: 'id',
+      },
+    });
+    await queryInterface.addColumn('pagecomp', 'studentId', {
+      type: Sequelize.DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users',
+        key: 'id',
+      },
+    });
     /**
      * Add altering commands here.
      *
@@ -30,6 +46,7 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
     await queryInterface.dropTable('studentcourses');
+    await queryInterface.dropTable('pagecomp');
     /**
      * Add reverting commands here.
      *

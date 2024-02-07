@@ -66,7 +66,7 @@ passport.deserializeUser((id, done) => {
         });
 });
 
-const {Course, Chapter, Page, User, studentcourse} = require('./models');
+const {Course, Chapter, Page, User, studentcourse, pagecomp} = require('./models');
 
 const isUser = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -304,13 +304,21 @@ app.get("/viewpage/:pageId/:chapterId", connectEnsureLogin.ensureLoggedIn(), asy
     const pageId = request.params.pageId;
     const chapterId = request.params.chapterId;
     const page = await Page.findByPk(pageId);
+
     if ((page) && (chapterId == page.chapterId)){
+        const studentId = request.user.id; 
+        const pageCompletion = await pagecomp.findOne({
+            where: {
+                pageId: page.id,
+                studentId: studentId
+            }
+        });
         response.render("viewpage", {
             pagetitle: page.title,
             pagecont: page.content,
             pageid: page.id,
             chap: page.chapterId,
-            completed: page.completed,
+            completed: pageCompletion ? true : false,
         })
     } else{
         response.redirect("/student");
@@ -388,7 +396,9 @@ app.post("/educator", async (request, response) => {
         });
     } catch (error) {
         console.error(error);
-        response.status(500).json({ error: "Internal Server Error" });
+        request.flash("error", "E-mail provided is already in use!");
+        response.redirect("/edusignup");
+    
     }
 });
 
@@ -411,7 +421,8 @@ app.post("/student", async (request, response) => {
         });
     } catch (error) {
         console.error(error);
-        response.status(500).json({ error: "Internal Server Error" });
+        request.flash("error", "E-mail provided is already in use!");
+        response.redirect("/stusignup");
     }
 });
 
@@ -550,6 +561,10 @@ app.put("/pages/:pageId/markAsCompleted", connectEnsureLogin.ensureLoggedIn(), i
     const page = await Page.findByPk(request.params.pageId);
     try {
         const markstatus = await page.markcomplete(request.body.completed);
+        await pagecomp.create({
+            pageId: page.id,
+            studentId: request.user.id,
+        })
         console.log(request.body.completed);
         response.json(markstatus);
     } catch (error) {
