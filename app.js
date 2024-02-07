@@ -7,6 +7,7 @@ app.set("views", path.join(__dirname, "views"));
 const passport = require('passport');
 const connectEnsureLogin = require('connect-ensure-login');
 const session = require('express-session');
+const flash = require("connect-flash");
 const LocalStrategy = require('passport-local');
 const bcrypt = require('bcrypt');
 const saltRounds= 10;
@@ -21,6 +22,11 @@ app.use(session({
       maxAge: 24 * 60 * 60 * 1000
     }
   }));
+app.use(flash());
+app.use(function(request, response, next) {
+    response.locals.messages = request.flash();
+    next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -134,7 +140,6 @@ app.get("/", async (request, response) => {
 });
 
 app.get("/login", async (request, response) => {
-    console.log("abcd");
     response.render("index");
 });
 
@@ -158,29 +163,24 @@ app.get("/educator", connectEnsureLogin.ensureLoggedIn(), isEducator, async (req
 });
 
 app.get("/student", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
-    try {
-        const studentId = request.user.id;
-        const enrolledCourses = await studentcourse.findAll({
-            where: {
-                studentId: studentId
-            },
-            attributes: ['courseId']
-        });
-        const enrolledCourseIds = enrolledCourses.map(enrolledCourse => enrolledCourse.courseId);
-        const courses = await Course.findAll({
-            where: {
-                id: {
-                    [Sequelize.Op.notIn]: enrolledCourseIds
-                }
+    const studentId = request.user.id;
+    const enrolledCourses = await studentcourse.findAll({
+        where: {
+            studentId: studentId
+        },
+        attributes: ['courseId']
+    });
+    const enrolledCourseIds = enrolledCourses.map(enrolledCourse => enrolledCourse.courseId);
+    const courses = await Course.findAll({
+        where: {
+            id: {
+                [Sequelize.Op.notIn]: enrolledCourseIds
             }
-        });
-        response.render("student", {
-            courses,
-        });
-    } catch(error) {
-        console.error(error);
-        response.status(500).json({ error: "Internal Server Error" });
-    }
+        }
+    });
+    response.render("student", {
+        courses,
+    });
 });
 
 app.get("/changepassedu", async (request, response) => {
@@ -374,14 +374,14 @@ app.get("/createchapter/:chapterId", connectEnsureLogin.ensureLoggedIn(), async 
 
 app.post("/edulog", passport.authenticate('educator', {
     failureRedirect: '/login',
-    //failureFlash: true 
+    failureFlash: true 
 }), async (request, response) => {
     response.redirect("/educator");
 });
 
 app.post("/stulog", passport.authenticate('student', {
     failureRedirect: '/login',
-    //failureFlash: true 
+    failureFlash: true 
 }), async (request, response) => {
     console.log("Student login successful");
     response.redirect("/student");
@@ -452,12 +452,14 @@ app.post('/change-password/:role', async (req, res) => {
             const isMatch = await bcrypt.compare(oldPassword, user.password);
 
             if (!isMatch) {
-                return res.status(400).send('Old password is incorrect');
+                req.flash("error", "Incorrect Old Password");
+                return res.redirect("/changepassedu");
             }
 
             // Check if the new password matches the confirmation password
             if (newPassword !== confirmPassword) {
-                return res.status(400).send('New password and confirm password do not match');
+                req.flash("error", "New and Confrimation passwords do not match ");
+                return res.redirect("/changepassedu");
             }
 
             // Hash the new password
@@ -476,12 +478,14 @@ app.post('/change-password/:role', async (req, res) => {
             const isMatch = await bcrypt.compare(oldPassword, user.password);
 
             if (!isMatch) {
-                return res.status(400).send('Old password is incorrect');
+                req.flash("error", "Incorrect Old Password");
+                return res.redirect("/changepassstu");
             }
 
             // Check if the new password matches the confirmation password
             if (newPassword !== confirmPassword) {
-                return res.status(400).send('New password and confirm password do not match');
+                req.flash("error", "New and Confrimation passwords do not match ");
+                return res.redirect("/changepassstu");
             }
 
             // Hash the new password
@@ -505,6 +509,10 @@ app.post('/change-password/:role', async (req, res) => {
 app.post("/courses", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     console.log("Creating a course");
     try {
+        if (!request.body.coursename) {
+            request.flash("error", "Course name cannot be empty");
+            return response.redirect("/createcourse");
+        }
         const createdCourse = await Course.create({
             name: request.body.coursename,
             eduId: 1,

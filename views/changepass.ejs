@@ -5,9 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My LMS</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    .form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    form {
+      width: 500px; /* Adjust width as needed */
+    }
+  </style>
 </head>
 <body>
+  <h1><center>Change your Password here</center></h1>
     <br>
+    <div class="form-container">
     <form action="/change-password/<%= role %>" method="post">
         <label for="oldPassword">Old Password:</label>
         <input type="password" id="oldPassword" name="oldPassword" required>
@@ -20,6 +32,9 @@
         <br><br>
         <button type="submit">Change Password</button>
     </form>
+    </div>
+    <%- include('flash.ejs') %>
+    <br>
     <% if (role === 'e') { %>
       <%- include('edufooter.ejs') %>
     <% } else { %>
