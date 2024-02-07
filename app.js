@@ -398,7 +398,6 @@ app.post("/educator", async (request, response) => {
         console.error(error);
         request.flash("error", "E-mail provided is already in use!");
         response.redirect("/edusignup");
-    
     }
 });
 
