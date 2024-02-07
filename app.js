@@ -388,7 +388,8 @@ app.post("/educator", async (request, response) => {
         });
     } catch (error) {
         console.error(error);
-        response.status(500).json({ error: "Internal Server Error" });
+        request.flash("error", "E-mail provided is already in use!");
+        response.redirect("/edusignup");
     }
 });
 
@@ -411,7 +412,8 @@ app.post("/student", async (request, response) => {
         });
     } catch (error) {
         console.error(error);
-        response.status(500).json({ error: "Internal Server Error" });
+        request.flash("error", "E-mail provided is already in use!");
+        response.redirect("/stusignup");
     }
 });
 
