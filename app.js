@@ -176,7 +176,9 @@ app.get("/viewreports", isUser, async (request, response) => {
         });
         console.log(educatorId);
         //total number of students enrolled
-        const stu = await User.findAll();
+        const stu = await User.findAll({
+            where: { role: 's' }
+        });
         const totalStudents = stu.length
 
         // Calculate the popularity score for each course based on the enrollment rate
