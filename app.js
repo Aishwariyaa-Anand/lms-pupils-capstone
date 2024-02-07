@@ -156,12 +156,17 @@ app.get("/educator", connectEnsureLogin.ensureLoggedIn(), isEducator, async (req
 app.get("/student", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
     try {
         const studentId = request.user.id;
+        const enrolledCourses = await studentcourse.findAll({
+            where: {
+                studentId: studentId
+            },
+            attributes: ['courseId']
+        });
+        const enrolledCourseIds = enrolledCourses.map(enrolledCourse => enrolledCourse.courseId);
         const courses = await Course.findAll({
             where: {
                 id: {
-                    [Sequelize.Op.notIn]: Sequelize.literal(`(
-                        SELECT courseId FROM studentcourses WHERE studentId = ${studentId}
-                    )`)
+                    [Sequelize.Op.notIn]: enrolledCourseIds
                 }
             }
         });
