@@ -8,7 +8,7 @@
 </head>
 <body>
     <br>
-    <form action="/change-password" method="post">
+    <form action="/change-password/<%= role %>" method="post">
         <label for="oldPassword">Old Password:</label>
         <input type="password" id="oldPassword" name="oldPassword" required>
         <br><br>
@@ -20,5 +20,10 @@
         <br><br>
         <button type="submit">Change Password</button>
     </form>
+    <% if (role === 'e') { %>
+      <%- include('edufooter.ejs') %>
+    <% } else { %>
+      <%- include('stufooter.ejs') %>
+    <% } %>
 </body>
 </html>

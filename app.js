@@ -183,6 +183,18 @@ app.get("/student", connectEnsureLogin.ensureLoggedIn(), isStudent, async (reque
     }
 });
 
+app.get("/changepassedu", async (request, response) => {
+    const userid = request.user.id;
+    const user = await Educator.findByPk(userid);
+    response.render("changepass", { user, role:"e" })
+})
+
+app.get("/changepassstu", async (request, response) => {
+    const userid = request.user.id;
+    const user = await Student.findByPk(userid);
+    response.render("changepass", { user, role:"s" })
+})
+
 app.get("/viewreports", isEducator, async (request, response) => {
     try {
         const educatorId = request.user.id;
@@ -422,6 +434,71 @@ app.post("/student", async (request, response) => {
     } catch (error) {
         console.error(error);
         response.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.post('/change-password/:role', async (req, res) => {
+    console.log("changepassword");
+    const userId = req.user.id; // Assuming you have authenticated the user and set up the user object
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+    const confirmPassword = req.body.confirmPassword;
+    const role = req.params.role;
+    try {
+        // Retrieve the user from the database
+        if (role === 'e') {
+            const user = await Educator.findByPk(userId);
+            // Check if the old password provided matches the one stored in the database
+            const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+            if (!isMatch) {
+                return res.status(400).send('Old password is incorrect');
+            }
+
+            // Check if the new password matches the confirmation password
+            if (newPassword !== confirmPassword) {
+                return res.status(400).send('New password and confirm password do not match');
+            }
+
+            // Hash the new password
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+            // Update the user's password in the database
+            user.password = hashedPassword;
+            await user.save();
+
+            // Redirect the user to a success page or send a success response
+            res.redirect('/educator');
+        }
+        if (role === 's') {
+            const user = await Student.findByPk(userId);
+            // Check if the old password provided matches the one stored in the database
+            const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+            if (!isMatch) {
+                return res.status(400).send('Old password is incorrect');
+            }
+
+            // Check if the new password matches the confirmation password
+            if (newPassword !== confirmPassword) {
+                return res.status(400).send('New password and confirm password do not match');
+            }
+
+            // Hash the new password
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+            // Update the user's password in the database
+            user.password = hashedPassword;
+            await user.save();
+
+            // Redirect the user to a success page or send a success response
+            res.redirect('/student');
+        }
+
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
