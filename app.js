@@ -225,7 +225,7 @@ app.get("/newpage/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (reque
 app.get("/viewcourse/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const courseId = request.params.courseId;
     const chapters = await Chapter.findAll({
-        where: { courseId },
+        where: { courseId: courseId },
     });
     const course = await Course.findByPk(courseId);
     console.log(course.id);
@@ -241,7 +241,7 @@ app.get("/viewcourse/:courseId", connectEnsureLogin.ensureLoggedIn(), async (req
 app.get("/viewencourse/:courseId", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const courseId = request.params.courseId;
     const chapters = await Chapter.findAll({
-        where: { courseId },
+        where: { courseId: courseId },
     });
     const course = await Course.findByPk(courseId);
     console.log(course.id);
@@ -258,7 +258,7 @@ app.get("/viewchap/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (requ
     const chapterId = request.params.chapterId;
     const chaps = await Chapter.findByPk(chapterId);
     const pages = await Page.findAll({
-        where: { chapterId },
+        where: { chapterId: chapterId },
     });
     response.render("viewchap", {
         chapname: chaps.name,
@@ -320,7 +320,7 @@ app.get("/educourse/:courseId", connectEnsureLogin.ensureLoggedIn(), isUser, asy
     const courseId = request.params.courseId;
     const course = await Course.findByPk(courseId);
     const chapters = await Chapter.findAll({
-        where: { courseId },
+        where: { courseId: courseId },
     });
     const pages = await Page.findAll();
     response.render("educourse", {
@@ -487,7 +487,7 @@ app.post("/courses/:courseId/chapters", connectEnsureLogin.ensureLoggedIn(), asy
         const chapterid = createdChapter.id;
         const chapter = await Chapter.findByPk(chapterid);
         const pages = await Page.findAll({
-            where: { chapterid },
+            where: { chapterId: chapterid },
         });
         response.render("createpage", { chapter, pages });
     } catch (error) {
@@ -523,7 +523,7 @@ app.post("/enroll/:courseId", connectEnsureLogin.ensureLoggedIn(), isUser, async
         const course = await Course.findByPk(courseId);
         const edu = await User.findByPk(course.eduId);
         const chapters = await Chapter.findAll({
-            where: { courseId },
+            where: { courseId: courseId },
         });
         await Course.isenrolled(course.id);
         const studentId = request.user.id;
@@ -600,12 +600,12 @@ app.delete("/courses/:courseId", connectEnsureLogin.ensureLoggedIn(), async (req
         const course = await Course.findByPk(courseId);
         if (course) {
             // Delete the course from the database
-            const chapters = await Chapter.findAll({ where: { courseId } });
+            const chapters = await Chapter.findAll({ where: { courseId: courseId } });
             // Delete associated pages
             await Page.destroy({ where: { chapterId: chapters.map(chapter => chapter.id) } });
 
             //delete associated chapters
-            await Chapter.destroy({ where: { courseId } });
+            await Chapter.destroy({ where: { courseId: courseId } });
             await studentcourse.destroy({ where: { courseId: courseId}});
             await course.destroy();
             return response.json({ success: true });
