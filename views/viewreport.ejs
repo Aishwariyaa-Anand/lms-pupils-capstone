@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My LMS</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1 class="head">Welcome!</h1>
+    <div style="text-align: right;">
+        <a href="#changepass"><button>Change Password</button><br><br></a>
+        <a href="/signout"><button style="background-color: crimson;" type="button">Signout</button></a>
+    </div>
+    <hr>
+    <div class="cards">
+        <% courseReports.forEach(course => { %>
+            <div class="card">
+                <div class="card-header"><%= course.courseName %></div>
+                <div class="card-body">
+                    <p>Total Students Enrolled: <%= course.totalStudents %></p>
+                    <p>Popularity: <%= course.popularityScore %></p>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+    <%- include('edufooter.ejs') %>
+</body>
+</html>

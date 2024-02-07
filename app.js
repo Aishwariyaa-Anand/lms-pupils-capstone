@@ -147,7 +147,11 @@ app.get("/stusignup", async (request, response) => {
 });
 
 app.get("/educator", connectEnsureLogin.ensureLoggedIn(), isEducator, async (request, response) => {
-    const courses = await Course.findAll();
+    const courses = await Course.findAll({
+        where: {
+            eduId: request.user.id
+        }
+    });
     response.render("educator", {
         courses,
     });
@@ -178,6 +182,48 @@ app.get("/student", connectEnsureLogin.ensureLoggedIn(), isStudent, async (reque
         response.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+app.get("/viewreports", isEducator, async (request, response) => {
+    try {
+        const educatorId = request.user.id;
+        const courses = await Course.findAll({
+            where: {
+                eduId: educatorId
+            },
+            include: [{
+                model: studentcourse,
+                attributes: ['studentId']
+            }]
+        });
+        console.log(educatorId);
+        //total number of students enrolled
+        const stu = await Student.findAll();
+        const totalStudents = stu.length
+
+        // Calculate the popularity score for each course based on the enrollment rate
+        const courseReports = courses.map(course => {
+            const enrollmentRate = course.studentcourses.length / totalStudents;
+            // Adjust the score as needed, e.g., multiplying by a factor to make the numbers more readable
+            const popularityScore = enrollmentRate * 100;
+            return {
+                courseId: course.id,
+                courseName: course.name,
+                totalStudents: course.studentcourses.length,
+                popularityScore: popularityScore.toFixed(2) // Round the score to 2 decimal places
+            };
+        });
+
+        // Sort the courseReports by popularity score in descending order
+        courseReports.sort((a, b) => b.popularityScore - a.popularityScore);
+
+        response.render("viewreport", {
+            courseReports
+        });
+    } catch(error) {
+        console.error(error);
+        response.status(500).json({ error: "Internal Server Error" });
+    }
+})
 
 app.get("/signout", async (request, response, next) => {
     request.logout((error) => {

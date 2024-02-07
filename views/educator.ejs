@@ -12,14 +12,12 @@
     <p style="text-align: center;" id="avail">My Courses</p>
     <div class="cards">
         <% courses.forEach(course => { %>
-            <% if (!course.enrolled) { %>
                 <div class="card">
                     <div class="card-header"><%= course.name %></div>
                     <div class="card-footer">
                         <a href="/educourse/<%= course.id %>"><button>View Course</button></a>
                     </div>
                 </div>
-            <% } %>
         <% }); %>
     </div>
 </body>
