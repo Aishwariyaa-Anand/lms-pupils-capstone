@@ -87,16 +87,17 @@ async function calculateCompletionPercentage(courseId, studentId) {
     });
 
     const completedPages = await pagecomp.count({
-        include: {
-            model: Page,
-            include: {
-                model: Chapter,
-                where: { courseId },
-                as: "Page->Chapter"
+        include: [
+            {
+                model: Page,
+                include: {
+                    model: Chapter,
+                    where: { courseId },
+                },
+                required: true, // Ensures that only completed pages are considered
             },
-        },
+        ],
         where: {
-            '$Page->Chapter.courseId$': courseId,
             studentId: studentId,
         },
     });
