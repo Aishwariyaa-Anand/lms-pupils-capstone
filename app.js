@@ -78,7 +78,7 @@ const isUser = (req, res, next) => {
 app.set("view engine", "ejs");
 
 // Example function to calculate completion percentage
-async function calculateCompletionPercentage(courseId) {
+async function calculateCompletionPercentage(courseId, studentId) {
     const totalPages = await Page.count({
         include: {
             model: Chapter,
@@ -86,14 +86,16 @@ async function calculateCompletionPercentage(courseId) {
         },
     });
 
-    const completedPages = await Page.count({
+    const completedPages = await pagecomp.count({
         include: {
-            model: Chapter,
-            where: { courseId },
+            model: Page,
+            include: {
+                model: Chapter,
+                where: { courseId },
+            },
         },
         where: {
-            completed: true,
-            // Add condition to check studentId
+            studentId: studentId,
         },
     });
 
@@ -283,7 +285,7 @@ app.get("/mycourses", connectEnsureLogin.ensureLoggedIn(), isUser, async (reques
             courses.map(async (course) => {
                 const courseId = course.id;
                 // Replace with the actual studentId
-                const completionPercentage = await calculateCompletionPercentage(courseId);
+                const completionPercentage = await calculateCompletionPercentage(courseId, studentId);
                 return {
                     ...course.toJSON(),
                     completionPercentage,

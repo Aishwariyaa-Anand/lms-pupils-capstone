@@ -20,7 +20,7 @@ module.exports = {
         key: 'id',
       },
     });
-    await queryInterface.addColumn('pagecomp', 'pageId', {
+    await queryInterface.addColumn('pagecomps', 'pageId', {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -28,7 +28,7 @@ module.exports = {
         key: 'id',
       },
     });
-    await queryInterface.addColumn('pagecomp', 'studentId', {
+    await queryInterface.addColumn('pagecomps', 'studentId', {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {

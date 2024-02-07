@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
-    await queryInterface.createTable('pagecomp', {
+    await queryInterface.createTable('pagecomps', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -37,5 +37,6 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('studentcourses');
+    await queryInterface.dropTable('pagecomps');
   }
 };
