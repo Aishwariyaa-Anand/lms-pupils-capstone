@@ -92,10 +92,11 @@ async function calculateCompletionPercentage(courseId, studentId) {
             include: {
                 model: Chapter,
                 where: { courseId },
+                as: "Chapter"
             },
         },
         where: {
-            '$Page.chapter.courseId$': courseId,
+            '$Chapter.courseId$': courseId,
             studentId: studentId,
         },
     });
