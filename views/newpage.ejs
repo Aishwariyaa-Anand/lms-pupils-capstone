@@ -11,7 +11,7 @@
     <h1 class="head">New Page</h1>
     <form action="/chapters/<%= chapterId %>/pages" method="post">
         <label for="title">Title</label><br><br>
-        <input name="title" id="title" type="text" style="width: 400px"><br><br>
+        <input name="title" id="title" type="text" style="width: 400px" required><br><br>
         <label for="content">Content</label><br><br>
         <textarea rows="8" cols="100" name="content"></textarea><br><br>
         <button type="submit">submit</button>
