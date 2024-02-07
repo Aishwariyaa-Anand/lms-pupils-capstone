@@ -9,7 +9,7 @@ module.exports = {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Educators',
+        model: 'Users',
         key: 'id',
       },
     });
@@ -42,6 +42,8 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
+    await queryInterface.removeColumn('Courses', 'eduId');
+
     await queryInterface.removeColumn('Pages', 'chapterId');
 
     await queryInterface.removeColumn('Chapters', 'courseId');

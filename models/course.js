@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Course.belongsTo(models.Educator, {
+      Course.belongsTo(models.User, {
         foreignKey: 'eduId'
       });
       Course.hasMany(models.Chapter, {
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     
     static eduName(){
-      return this.sequelize.models.Educator.findOne({
+      return this.sequelize.models.User.findOne({
         attributes: ['name'],
         where: {
           eduId: this.eduId,

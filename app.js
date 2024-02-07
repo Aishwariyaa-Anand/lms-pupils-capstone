@@ -30,42 +30,19 @@ app.use(function(request, response, next) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use('educator', new LocalStrategy({
-    usernameField: 'eduemail',
-    passwordField: 'edupwd'
-}, (email, password, done) => {
-    Educator.findOne({ where: { email: email } })
-        .then(async (educator) => {
-            if (!educator) {
-                return done(null, false, { message: "Invalid email" });
-            }
-
-            const result = await bcrypt.compare(password, educator.password);
-            if (result) {
-                return done(null, educator);
-            } else {
-                return done(null, false, { message: "Invalid password" });
-            }
-        })
-        .catch((error) => {
-            return done(error);
-        });
-}));
-
-// Passport configuration for Student
-passport.use('student', new LocalStrategy({
-    usernameField: 'stuemail',
-    passwordField: 'stupwd'
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'pwd'
 }, (username, password, done) => {
-    Student.findOne({ where: { email: username } })
-        .then(async (student) => {
-            if (!student) {
+    User.findOne({ where: { email: username } })
+        .then(async (user) => {
+            if (!user) {
                 return done(null, false, { message: "Invalid email" });
             }
 
-            const result = await bcrypt.compare(password, student.password);
+            const result = await bcrypt.compare(password, user.password);
             if (result) {
-                return done(null, student);
+                return done(null, user);
             } else {
                 return done(null, false, { message: "Invalid password" });
             }
@@ -76,14 +53,11 @@ passport.use('student', new LocalStrategy({
 }));
 
 passport.serializeUser((user, done) => {
-    done(null, { id: user.id, role: user.role }); // Serialize user ID and role
+    done(null, user.id); // Serialize user ID and role
 });
 
-passport.deserializeUser((serializedUser, done) => {
-    const { id, role } = serializedUser;
-    const model = ( role === 'e' ) ? Educator : Student;
-
-    model.findByPk(id)
+passport.deserializeUser((id, done) => {
+    User.findByPk(id)
         .then(user => {
             done(null, user)
         })
@@ -92,16 +66,9 @@ passport.deserializeUser((serializedUser, done) => {
         });
 });
 
-const {Course, Chapter, Page, Educator, Student, studentcourse} = require('./models');
+const {Course, Chapter, Page, User, studentcourse} = require('./models');
 
-const isEducator = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next(); // User is an educator
-    }
-    res.status(403).send('Unauthorized'); // User is not an educator
-};
-
-const isStudent = (req, res, next) => {
+const isUser = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next(); // User is a student
     }
@@ -151,7 +118,7 @@ app.get("/stusignup", async (request, response) => {
     response.render("stusignup");
 });
 
-app.get("/educator", connectEnsureLogin.ensureLoggedIn(), isEducator, async (request, response) => {
+app.get("/educator", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const courses = await Course.findAll({
         where: {
             eduId: request.user.id
@@ -162,7 +129,7 @@ app.get("/educator", connectEnsureLogin.ensureLoggedIn(), isEducator, async (req
     });
 });
 
-app.get("/student", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
+app.get("/student", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const studentId = request.user.id;
     const enrolledCourses = await studentcourse.findAll({
         where: {
@@ -185,17 +152,17 @@ app.get("/student", connectEnsureLogin.ensureLoggedIn(), isStudent, async (reque
 
 app.get("/changepassedu", async (request, response) => {
     const userid = request.user.id;
-    const user = await Educator.findByPk(userid);
+    const user = await User.findByPk(userid);
     response.render("changepass", { user, role:"e" })
 })
 
 app.get("/changepassstu", async (request, response) => {
     const userid = request.user.id;
-    const user = await Student.findByPk(userid);
+    const user = await User.findByPk(userid);
     response.render("changepass", { user, role:"s" })
 })
 
-app.get("/viewreports", isEducator, async (request, response) => {
+app.get("/viewreports", isUser, async (request, response) => {
     try {
         const educatorId = request.user.id;
         const courses = await Course.findAll({
@@ -209,7 +176,7 @@ app.get("/viewreports", isEducator, async (request, response) => {
         });
         console.log(educatorId);
         //total number of students enrolled
-        const stu = await Student.findAll();
+        const stu = await User.findAll();
         const totalStudents = stu.length
 
         // Calculate the popularity score for each course based on the enrollment rate
@@ -262,7 +229,7 @@ app.get("/viewcourse/:courseId", connectEnsureLogin.ensureLoggedIn(), async (req
     });
     const course = await Course.findByPk(courseId);
     console.log(course.id);
-    const edu = await Educator.findByPk(course.eduId);
+    const edu = await User.findByPk(course.eduId);
     response.render("viewcourse", {
         coursename: course.name,
         courseid: course.id,
@@ -278,7 +245,7 @@ app.get("/viewencourse/:courseId", connectEnsureLogin.ensureLoggedIn(), async (r
     });
     const course = await Course.findByPk(courseId);
     console.log(course.id);
-    const edu = await Educator.findByPk(course.eduId);
+    const edu = await User.findByPk(course.eduId);
     response.render("viewencourse", {
         coursename: course.name,
         courseid: course.id,
@@ -300,7 +267,7 @@ app.get("/viewchap/:chapterId", connectEnsureLogin.ensureLoggedIn(), async (requ
     })
 });
 
-app.get("/mycourses", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
+app.get("/mycourses", connectEnsureLogin.ensureLoggedIn(), isUser, async (request, response) => {
     try {
         const studentId = request.user.id; // Assuming the student ID is stored in the user object
         const courses = await Course.findAll({
@@ -344,14 +311,12 @@ app.get("/viewpage/:pageId/:chapterId", connectEnsureLogin.ensureLoggedIn(), asy
             completed: page.completed,
         })
     } else{
-        const courses = await Course.findAll();
-        response.render("student", {
-            courses,
-        })
+        response.redirect("/student");
+        
     }
 });
 
-app.get("/educourse/:courseId", connectEnsureLogin.ensureLoggedIn(), isEducator, async (request, response) => {
+app.get("/educourse/:courseId", connectEnsureLogin.ensureLoggedIn(), isUser, async (request, response) => {
     const courseId = request.params.courseId;
     const course = await Course.findByPk(courseId);
     const chapters = await Chapter.findAll({
@@ -372,39 +337,52 @@ app.get("/createchapter/:chapterId", connectEnsureLogin.ensureLoggedIn(), async 
     response.render("createchapter", { courseId });
 });
 
-app.post("/edulog", passport.authenticate('educator', {
+app.post("/edulog", passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true 
 }), async (request, response) => {
-    response.redirect("/educator");
+    const user = await User.findByPk(request.user.id);
+    if (user.role === 'e'){
+        console.log("Educator login successful");
+        response.redirect("/educator");
+    }
+    else {
+        request.flash("error", "You are not an educator");
+        return response.redirect("/");
+    }
 });
 
-app.post("/stulog", passport.authenticate('student', {
+app.post("/stulog", passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true 
 }), async (request, response) => {
-    console.log("Student login successful");
-    response.redirect("/student");
+    const user = await User.findByPk(request.user.id);
+    if (user.role === 's'){
+        console.log("Student login successful");
+        response.redirect("/student");
+    }
+    else {
+        request.flash("error", "You are not a student");
+        return response.redirect("/");
+    }
 });
 
 app.post("/educator", async (request, response) => {
     console.log("Creating an educator");
     const hashpwd = await bcrypt.hash(request.body.edupwd, saltRounds)
     try {
-        const educator = await Educator.create({
+        const educator = await User.create({
             name: request.body.eduname,
             email: request.body.eduemail,
             password: hashpwd,
+            role: 'e'
         });
-        const courses = await Course.findAll();
         //const eduId = educator.id;
         request.login(educator, (error) => {
             if (error) {
               console.log(error)
             }
-        });
-        response.render("educator", {
-            courses,
+            response.redirect("/educator");
         });
     } catch (error) {
         console.error(error);
@@ -416,20 +394,18 @@ app.post("/student", async (request, response) => {
     console.log("Creating a student");
     const hashpwd = await bcrypt.hash(request.body.stupwd, saltRounds)
     try {
-        const student = await Student.create({
+        const student = await User.create({
             name: request.body.stuname,
             email: request.body.stuemail,
             password: hashpwd,
+            role: 's'
         });
-        const courses = await Course.findAll();
         //const eduId = educator.id;
         request.login(student, (error) => {
             if (error) {
               console.log(error)
             }
-        });
-        response.render("student", {
-            courses,
+            response.redirect("/student")
         });
     } catch (error) {
         console.error(error);
@@ -443,11 +419,8 @@ app.post('/change-password/:role', async (req, res) => {
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
     const confirmPassword = req.body.confirmPassword;
-    const role = req.params.role;
     try {
-        // Retrieve the user from the database
-        if (role === 'e') {
-            const user = await Educator.findByPk(userId);
+            const user = await User.findByPk(userId);
             // Check if the old password provided matches the one stored in the database
             const isMatch = await bcrypt.compare(oldPassword, user.password);
 
@@ -469,35 +442,12 @@ app.post('/change-password/:role', async (req, res) => {
             user.password = hashedPassword;
             await user.save();
 
-            // Redirect the user to a success page or send a success response
-            res.redirect('/educator');
-        }
-        if (role === 's') {
-            const user = await Student.findByPk(userId);
-            // Check if the old password provided matches the one stored in the database
-            const isMatch = await bcrypt.compare(oldPassword, user.password);
-
-            if (!isMatch) {
-                req.flash("error", "Incorrect Old Password");
-                return res.redirect("/changepassstu");
+            if (req.params.role === 'e'){
+                // Redirect the user to a success page or send a success response
+                res.redirect('/educator');
+            } else {
+                res.redirect('/student');
             }
-
-            // Check if the new password matches the confirmation password
-            if (newPassword !== confirmPassword) {
-                req.flash("error", "New and Confrimation passwords do not match ");
-                return res.redirect("/changepassstu");
-            }
-
-            // Hash the new password
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-            // Update the user's password in the database
-            user.password = hashedPassword;
-            await user.save();
-
-            // Redirect the user to a success page or send a success response
-            res.redirect('/student');
-        }
 
         
     } catch (error) {
@@ -566,12 +516,12 @@ app.post("/chapters/:chapterId/pages", connectEnsureLogin.ensureLoggedIn(), asyn
     }
 });
 
-app.post("/enroll/:courseId", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
+app.post("/enroll/:courseId", connectEnsureLogin.ensureLoggedIn(), isUser, async (request, response) => {
     console.log("Enrolling in a course");
     try {
         const courseId = request.params.courseId;
         const course = await Course.findByPk(courseId);
-        const edu = await Educator.findByPk(course.eduId);
+        const edu = await User.findByPk(course.eduId);
         const chapters = await Chapter.findAll({
             where: { courseId },
         });
@@ -593,7 +543,7 @@ app.post("/enroll/:courseId", connectEnsureLogin.ensureLoggedIn(), isStudent, as
     }
 })
 
-app.put("/pages/:pageId/markAsCompleted", connectEnsureLogin.ensureLoggedIn(), isStudent, async (request, response) => {
+app.put("/pages/:pageId/markAsCompleted", connectEnsureLogin.ensureLoggedIn(), isUser, async (request, response) => {
     console.log("Marking a page as completed");
     const page = await Page.findByPk(request.params.pageId);
     try {
@@ -656,7 +606,7 @@ app.delete("/courses/:courseId", connectEnsureLogin.ensureLoggedIn(), async (req
 
             //delete associated chapters
             await Chapter.destroy({ where: { courseId } });
-        
+            await studentcourse.destroy({ where: { courseId: courseId}});
             await course.destroy();
             return response.json({ success: true });
         } else {
