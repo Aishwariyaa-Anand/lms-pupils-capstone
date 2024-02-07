@@ -46,7 +46,7 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
     await queryInterface.dropTable('studentcourses');
-    await queryInterface.dropTable('pagecomp');
+    await queryInterface.dropTable('pagecomps');
     /**
      * Add reverting commands here.
      *
