@@ -1,38 +1,38 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     //educators id in course table
-    await queryInterface.addColumn('Courses', 'eduId', {
+    await queryInterface.addColumn("Courses", "eduId", {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users',
-        key: 'id',
+        model: "Users",
+        key: "id",
       },
     });
 
     //courseId in Chapters table
-    await queryInterface.addColumn('Chapters', 'courseId', {
+    await queryInterface.addColumn("Chapters", "courseId", {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Courses',
-        key: 'id',
+        model: "Courses",
+        key: "id",
       },
     });
 
     //chapterId in pages table
-    await queryInterface.addColumn('Pages', 'chapterId', {
+    await queryInterface.addColumn("Pages", "chapterId", {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Chapters',
-        key: 'id',
+        model: "Chapters",
+        key: "id",
       },
-    });    
+    });
     /**
      * Add altering commands here.
      *
@@ -41,17 +41,17 @@ module.exports = {
      */
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Courses', 'eduId');
+  async down(queryInterface) {
+    await queryInterface.removeColumn("Courses", "eduId");
 
-    await queryInterface.removeColumn('Pages', 'chapterId');
+    await queryInterface.removeColumn("Pages", "chapterId");
 
-    await queryInterface.removeColumn('Chapters', 'courseId');
+    await queryInterface.removeColumn("Chapters", "courseId");
     /**
      * Add reverting commands here.
      *
      * Example:
      * await queryInterface.dropTable('users');
      */
-  }
+  },
 };

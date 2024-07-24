@@ -1,8 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+"use strict";
+const { Model } = require("sequelize");
+module.exports = (sequelize) => {
   class pagecomp extends Model {
     /**
      * Helper method for defining associations.
@@ -12,17 +10,19 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       pagecomp.belongsTo(models.User, {
-        foreignKey: 'studentId'
+        foreignKey: "studentId",
       });
       pagecomp.belongsTo(models.Page, {
-        foreignKey: 'pageId'
-      })
+        foreignKey: "pageId",
+      });
     }
   }
-  pagecomp.init({
-  }, {
-    sequelize,
-    modelName: 'pagecomp',
-  });
+  pagecomp.init(
+    {},
+    {
+      sequelize,
+      modelName: "pagecomp",
+    },
+  );
   return pagecomp;
 };

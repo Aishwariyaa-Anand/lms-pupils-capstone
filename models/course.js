@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Course extends Model {
     /**
@@ -12,42 +10,44 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Course.belongsTo(models.User, {
-        foreignKey: 'eduId'
+        foreignKey: "eduId",
       });
       Course.hasMany(models.Chapter, {
-        foreignKey: 'courseId',
-        onDelete: 'CASCADE'
+        foreignKey: "courseId",
+        onDelete: "CASCADE",
       });
       Course.hasMany(models.studentcourse, {
-        foreignKey: 'courseId',
-        onDelete: 'CASCADE'
-      })
+        foreignKey: "courseId",
+        onDelete: "CASCADE",
+      });
     }
-    
-    static eduName(){
+
+    static eduName() {
       return this.sequelize.models.User.findOne({
-        attributes: ['name'],
+        attributes: ["name"],
         where: {
           eduId: this.eduId,
         },
       });
     }
 
-    static nname(){
+    static nname() {
       return this.name;
     }
 
     static isenrolled(id) {
       return this.update({ enrolled: true }, { where: { id: id } });
     }
-
   }
-  Course.init({
-    name: DataTypes.STRING,
-    enrolled: DataTypes.BOOLEAN,
-  }, {
-    sequelize,
-    modelName: 'Course',
-  });
+  Course.init(
+    {
+      name: DataTypes.STRING,
+      enrolled: DataTypes.BOOLEAN,
+    },
+    {
+      sequelize,
+      modelName: "Course",
+    },
+  );
   return Course;
 };

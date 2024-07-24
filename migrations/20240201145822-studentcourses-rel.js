@@ -1,39 +1,39 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    await queryInterface.addColumn('studentcourses', 'studentId', {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.addColumn("studentcourses", "studentId", {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users',
-        key: 'id',
+        model: "Users",
+        key: "id",
       },
     });
 
-    await queryInterface.addColumn('studentcourses', 'courseId', {
+    await queryInterface.addColumn("studentcourses", "courseId", {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Courses',
-        key: 'id',
+        model: "Courses",
+        key: "id",
       },
     });
-    await queryInterface.addColumn('pagecomps', 'pageId', {
+    await queryInterface.addColumn("pagecomps", "pageId", {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Pages',
-        key: 'id',
+        model: "Pages",
+        key: "id",
       },
     });
-    await queryInterface.addColumn('pagecomps', 'studentId', {
+    await queryInterface.addColumn("pagecomps", "studentId", {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users',
-        key: 'id',
+        model: "Users",
+        key: "id",
       },
     });
     /**
@@ -44,14 +44,14 @@ module.exports = {
      */
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('studentcourses');
-    await queryInterface.dropTable('pagecomps');
+  async down(queryInterface) {
+    await queryInterface.dropTable("studentcourses");
+    await queryInterface.dropTable("pagecomps");
     /**
      * Add reverting commands here.
      *
      * Example:
      * await queryInterface.dropTable('users');
      */
-  }
+  },
 };
