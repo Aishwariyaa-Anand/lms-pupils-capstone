@@ -21,6 +21,7 @@ LMS Pupils Capstone is a Learning Management System designed to facilitate the m
 ```git clone https://github.com/Aishwariyaa-Anand/lms-pupils-capstone.git```
    
 ```cd lms-pupils-capstone ```
+
 2. Install Dependencies
 
 ``` npm install```
