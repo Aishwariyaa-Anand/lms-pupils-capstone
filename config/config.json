@@ -4,23 +4,17 @@
     "password": "lmsdb",
     "database": "lmsdb_development",
     "host": "127.0.0.1",
-    "port": 3307,
-    "dialect": "mysql"
+    "dialect": "postgres"
   },
   "test": {
     "username": "lmsdb",
     "password": "lmsdb",
     "database": "lmsdb_test",
     "host": "127.0.0.1",
-    "port": 3307,
-    "dialect": "mysql"
+    "dialect": "postgres"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "lmsdb_production",
-    "host": "127.0.0.1",
-    "port": 3307,
-    "dialect": "mysql"
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres"
   }
 }
