@@ -4,7 +4,6 @@
     "password": "lmsdb",
     "database": "lmsdb_development",
     "host": "127.0.0.1",
-    "port": 3307,
     "dialect": "mysql"
   },
   "test": {
@@ -12,7 +11,6 @@
     "password": "lmsdb",
     "database": "lmsdb_test",
     "host": "127.0.0.1",
-    "port": 3307,
     "dialect": "mysql"
   },
   "production": {
@@ -20,7 +18,6 @@
     "password": null,
     "database": "lmsdb_production",
     "host": "127.0.0.1",
-    "port": 3307,
     "dialect": "mysql"
   }
 }
