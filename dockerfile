@@ -10,10 +10,11 @@ RUN apk add --no-cache \
     libxrandr \
     libxtst \
     gtk+3.0 \
-    libnss3 \
     alsa-lib \
     dbus \
-    ttf-freefont
+    ttf-freefont \
+    nss \
+    libxss
 
 WORKDIR /app
 
