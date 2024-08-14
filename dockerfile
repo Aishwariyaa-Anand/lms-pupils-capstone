@@ -14,7 +14,12 @@ RUN apk add --no-cache \
     dbus \
     ttf-freefont \
     nss \
-    libxss
+    libx11-xcb \
+    xcb-util \
+    xcb-util-wm \
+    xcb-util-image \
+    xcb-util-keysyms \
+    xcb-util-renderutil
 
 WORKDIR /app
 
