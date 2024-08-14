@@ -1,26 +1,6 @@
 # Base image with dependencies
 FROM --platform=$BUILDPLATFORM node:lts-alpine as base
 
-RUN apk add --no-cache \
-    xvfb-run \
-    libx11 \
-    libxkbcommon \
-    libxcomposite \
-    libxdamage \
-    libxrandr \
-    libxtst \
-    gtk+3.0 \
-    alsa-lib \
-    dbus \
-    ttf-freefont \
-    nss \
-    libx11-xcb \
-    xcb-util \
-    xcb-util-wm \
-    xcb-util-image \
-    xcb-util-keysyms \
-    xcb-util-renderutil
-
 WORKDIR /app
 
 COPY package*.json /app/
