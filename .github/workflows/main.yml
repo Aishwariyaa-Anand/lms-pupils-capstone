@@ -48,12 +48,12 @@ jobs:
           docker-compose exec -T app npx sequelize-cli db:migrate
 
       - name: Run unit tests
-        run: npm test
-
-      - name: Install and run integration tests
         run: |
-          npm install cypress cypress-json-results
-          npx cypress run
+          docker-compose exec -T app npm test
+      - name: Run integration tests
+        run: |
+          docker-compose exec -T app npm install cypress cypress-json-results
+          docker-compose exec -T app npx cypress run
 
       - name: Shut down Docker containers
         run: docker-compose down
