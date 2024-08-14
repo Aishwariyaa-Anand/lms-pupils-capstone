@@ -48,5 +48,19 @@ jobs:
           docker-compose exec -T app npm install cypress cypress-json-results
           docker-compose exec -T app npx cypress run
 
+      - name: Notify on success
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"🎉🎉🎉 Success! The CI & CD pipeline has completed without issues. All tests passed. :tada:"}' \
+          ${{ secrets.SLACK_URL }}
+      
+      - name: Notify on failure
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"🚨🚨🚨 Alert! The CI & CD pipeline has encountered problems and failed. Immediate review is required. :warning:"}' \
+          ${{ secrets.SLACK_URL }}
+
       - name: Shut down Docker containers
         run: docker-compose down
