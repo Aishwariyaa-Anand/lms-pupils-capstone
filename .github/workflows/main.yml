@@ -1,28 +1,40 @@
-name: CI/CD Pipeline
+name: CI && CD
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  build-and-test:
+  run-tests:
     runs-on: ubuntu-latest
-
     services:
       docker:
-        image: docker:20.10-dind
+        image: docker:latest
         options: --privileged
+        ports:
+          - 4000:4000
+          - 5432:5432
 
     steps:
-      - name: Checkout code
+      - name: Check out repository code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
+      - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      - name: Set up Docker Cache
-        uses: docker/cache-action@v2
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          path: |
-            /tmp/.buildx-cache
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build and start Docker containers
         run: |
@@ -36,13 +48,12 @@ jobs:
           docker-compose exec -T app npx sequelize-cli db:migrate
 
       - name: Run unit tests
-        run: |
-          docker-compose exec -T app npm test
+        run: npm test
 
-      - name: Run integration tests
+      - name: Install and run integration tests
         run: |
-          docker-compose exec -T app npm install cypress cypress-json-results
-          docker-compose exec -T app npx cypress run
+          npm install cypress cypress-json-results
+          npx cypress run
 
       - name: Shut down Docker containers
         run: docker-compose down
