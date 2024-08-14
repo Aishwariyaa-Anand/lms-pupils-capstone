@@ -1,18 +1,18 @@
 # Base image with dependencies
 FROM --platform=$BUILDPLATFORM node:lts-alpine as base
 
-RUN apt-get update && apt-get install -y \
-    xvfb \
-    libgtk2.0-0 \
-    libx11-xcb1 \
-    libnss3 \
-    libgbm-dev \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxtst6 \
-    libxshmfence1 \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \  
+    libgtk2.0-0 \  
+    libgtk-3-0 \  
+    libgbm-dev \  
+    libnotify-dev \  
+    libnss3 \  
+    libxss1 \  
+    libasound2 \  
+    libxtst6 \  
+    xauth \  
+    xvfb 
+
 
 WORKDIR /app
 
