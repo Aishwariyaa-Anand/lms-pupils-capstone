@@ -1,5 +1,5 @@
 # Base image with dependencies
-FROM node:21-focal
+FROM node:21-focal AS base
 
 # Set environment variables to avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -17,20 +17,21 @@ RUN apt-get update && apt-get install -y \
     xauth \
     xvfb \
     && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY package*.json /app/
 EXPOSE 4000
 
 # Production stage
-FROM base as production
+FROM base AS production
 ENV NODE_ENV=production
 RUN npm install
 COPY . /app
 CMD ["node", "index.js"]
 
 # Development stage
-FROM base as dev
+FROM base AS dev
 ENV NODE_ENV=development
 RUN npm install -g nodemon && npm install
 COPY . /app
