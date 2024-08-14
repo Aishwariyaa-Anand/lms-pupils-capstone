@@ -1,5 +1,5 @@
 # Base image with dependencies
-FROM node:21-focal AS base
+FROM node:21-bullseye AS base
 
 # Set environment variables to avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
