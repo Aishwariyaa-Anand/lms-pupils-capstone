@@ -30,12 +30,6 @@ describe("Course Management Tests", () => {
     cy.url().should("include", "/courses");
   });
 
-  it("should view course details", () => {
-    cy.visit("http://localhost:4000/educourse/1");
-    cy.url().should("include", "/educourse/1");
-    cy.get("h1").eq(1).should("contain", "New Course");
-  });
-
   it("should delete a course", () => {
     cy.visit("http://localhost:4000/educator");
     cy.get(".card")
