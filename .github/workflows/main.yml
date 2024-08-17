@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
-            
+
       - name: Install npm dependencies
         run: npm ci
 
@@ -54,7 +54,7 @@ jobs:
           curl -X POST -H 'Content-type: application/json' \
           --data '{"text":"🎉🎉🎉 Success! The CI & CD pipeline has completed without issues. All tests passed. :tada:"}' \
           ${{ secrets.SLACK_URL }}
-      
+
       - name: Notify on failure
         if: failure()
         run: |
