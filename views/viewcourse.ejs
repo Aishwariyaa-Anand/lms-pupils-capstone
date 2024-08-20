@@ -23,9 +23,9 @@
   <%= eduname %>
   <br><br>
   <form action="/enroll/<%= courseid %>" method="post">
-    <button type="submit">Enroll</button>
+    <button type="submit"><%= enrollButton %></button>
   </form>
-  <h3><u><b>Chapters</b></u></h3>
+  <h3><u><b><%= chaptersTitle %></b></u></h3>
   <% chapters.forEach(chapter => { %>
     <button class="chapapa" disabled><%= chapter.name %></button><br><br>
   <% }); %>

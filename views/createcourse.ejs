@@ -8,12 +8,12 @@
 </head>
 <body>
     <%- include('eduheader.ejs') %>
-    <h1 class="head">Create new course</h1>
+    <h1 class="head"><%= createCourseTitle %></h1>
     <br><br>
     <form action="/courses" method="post">
-        <label for="coursename">What is the name of the course?</label><br><br>
+        <label for="coursename"><%= courseNameLabel %></label><br><br>
         <input name="coursename" id="coursename" type="text" style="width: 400px"><br><br>
-        <button type="submit">Submit</button>
+        <button type="submit"><%= submitButton %></button>
     </form>
     <%- include('flash.ejs') %>
     <%- include('edufooter.ejs') %>

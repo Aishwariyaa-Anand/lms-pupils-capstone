@@ -7,10 +7,10 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <h1 class="head">Welcome!</h1>
+    <h1 class="head"><%= welcomeMessage %></h1>
     <div style="text-align: right;">
-        <a href="/changepassedu"><button>Change Password</button><br><br></a>
-        <a href="/signout"><button style="background-color: crimson;" type="button">Signout</button></a>
+        <a href="/changepassedu"><button><%= changePassword %></button><br><br></a>
+        <a href="/signout"><button style="background-color: crimson;" type="button"><%= signOut %></button></a>
     </div>
     <hr>
     <div class="cards">
@@ -18,8 +18,8 @@
             <div class="card">
                 <div class="card-header"><%= course.courseName %></div>
                 <div class="card-body">
-                    <p>Total Students Enrolled: <%= course.totalStudents %></p>
-                    <p>Popularity: <%= course.popularityScore %></p>
+                    <p><%= totalStudents %> <%= course.totalStudents %></p>
+                    <p><%= popularity %> <%= course.popularityScore %></p>
                 </div>
             </div>
         <% }); %>
