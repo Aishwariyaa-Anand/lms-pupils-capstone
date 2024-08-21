@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //translations
-const { I18n } = require("i18n");
+const i18n = require("i18n");
 
 // eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
@@ -33,7 +33,6 @@ app.use(function (request, response, next) {
   response.locals.messages = request.flash();
   next();
 });
-const i18n = new I18n();
 
 // i18n configuration
 i18n.configure({
@@ -45,7 +44,7 @@ i18n.configure({
   autoReload: true,
   updateFiles: false,
   syncFiles: true,
-  parser: JSON
+  parser: JSON,
 });
 
 // Middleware to set the locale based on the query parameter
@@ -143,51 +142,51 @@ async function calculateCompletionPercentage(courseId, studentId) {
   return completionPercentage;
 }
 
-app.get('/set-language/:lang', (req, res) => {
+app.get("/set-language/:lang", (req, res) => {
   const lang = req.params.lang;
-  res.cookie('i18n', lang); // Set the language in a cookie
+  res.cookie("i18n", lang); // Set the language in a cookie
   i18n.setLocale(lang); // Set the language for the current session
   console.log(i18n.getLocale());
-  res.redirect('back'); // Redirect to the previous page
+  res.redirect("back"); // Redirect to the previous page
 });
 
 app.get("/", async (request, response) => {
   console.log("App started");
-  console.log(i18n.getLocale())
+  console.log(i18n.getLocale());
   response.render("index", {
-    signInEducator: i18n.__('Sign in as Educator'),
-    signInStudent: i18n.__('Sign in as Student'),
-    email: i18n.__('Email'),
-    password: i18n.__('Password') 
+    signInEducator: i18n.__("Sign in as Educator"),
+    signInStudent: i18n.__("Sign in as Student"),
+    email: i18n.__("Email"),
+    password: i18n.__("Password"),
   });
 });
 
 app.get("/login", async (request, response) => {
   response.render("index", {
-    signInEducator: i18n.__('Sign in as Educator'),
-    signInStudent: i18n.__('Sign in as Student'),
-    email: i18n.__('Email'),
-    password: i18n.__('Password') 
+    signInEducator: i18n.__("Sign in as Educator"),
+    signInStudent: i18n.__("Sign in as Student"),
+    email: i18n.__("Email"),
+    password: i18n.__("Password"),
   });
 });
 
 app.get("/edusignup", async (request, response) => {
   response.render("edusignup", {
-    signUpAsEducator: i18n.__('Sign up as Educator'),
-    nameLabel: i18n.__('Name'),
-    emailLabel: i18n.__('Email'),
-    passwordLabel: i18n.__('Password'),
-    submitButton: i18n.__('Sign up')
+    signUpAsEducator: i18n.__("Sign up as Educator"),
+    nameLabel: i18n.__("Name"),
+    emailLabel: i18n.__("Email"),
+    passwordLabel: i18n.__("Password"),
+    submitButton: i18n.__("Sign up"),
   });
 });
 
 app.get("/stusignup", async (request, response) => {
   response.render("stusignup", {
-    signUpAsStudent: i18n.__('Sign up as Student'),
-    nameLabel: i18n.__('Name'),
-    emailLabel: i18n.__('Email'),
-    passwordLabel: i18n.__('Password'),
-    submitButton: i18n.__('Sign up')
+    signUpAsStudent: i18n.__("Sign up as Student"),
+    nameLabel: i18n.__("Name"),
+    emailLabel: i18n.__("Email"),
+    passwordLabel: i18n.__("Password"),
+    submitButton: i18n.__("Sign up"),
   });
 });
 
@@ -202,9 +201,9 @@ app.get(
     });
     response.render("educator", {
       courses,
-      myCourse: i18n.__('My Courses'),
-      createCourse: i18n.__('Create course'),
-      viewCourse: i18n.__('View Course'),
+      myCourse: i18n.__("My Courses"),
+      createCourse: i18n.__("Create course"),
+      viewCourse: i18n.__("View Course"),
     });
   },
 );
@@ -232,10 +231,10 @@ app.get(
     });
     response.render("student", {
       courses,
-      availCourses: i18n.__('Available Courses'),
-      myCourses: i18n.__('My courses'),
-      viewCourse: i18n.__('View Course'),
-      enroll: i18n.__('Enroll')
+      availCourses: i18n.__("Available Courses"),
+      myCourses: i18n.__("My courses"),
+      viewCourse: i18n.__("View Course"),
+      enroll: i18n.__("Enroll"),
     });
   },
 );
@@ -291,11 +290,11 @@ app.get("/viewreports", isUser, async (request, response) => {
 
     response.render("viewreport", {
       courseReports,
-      welcomeMessage: i18n.__('Welcome!'),
-      changePassword: i18n.__('Change Password'),
-      signOut: i18n.__('Signout'),
-      totalStudents: i18n.__('Total Students Enrolled'),
-      popularity: i18n.__('Popularity'),
+      welcomeMessage: i18n.__("Welcome!"),
+      changePassword: i18n.__("Change Password"),
+      signOut: i18n.__("Signout"),
+      totalStudents: i18n.__("Total Students Enrolled"),
+      popularity: i18n.__("Popularity"),
     });
   } catch (error) {
     console.error(error);

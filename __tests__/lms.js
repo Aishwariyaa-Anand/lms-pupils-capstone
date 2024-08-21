@@ -3,8 +3,14 @@ const request = require("supertest");
 
 const app = require("../app");
 const db = require("../models/index");
-
 let server, agent;
+
+jest.mock("i18n", () => ({
+  configure: jest.fn(),
+  init: jest.fn((req, res, next) => next()), // Mock the middleware function
+  setLocale: jest.fn(),
+  __: jest.fn((text) => text),
+}));
 
 describe("Learning Management System", () => {
   beforeAll(async () => {
@@ -17,6 +23,8 @@ describe("Learning Management System", () => {
     try {
       await db.sequelize.close();
       await server.close();
+
+      jest.clearAllMocks();
     } catch (error) {
       console.log(error);
     }
