@@ -1,3 +1,7 @@
+/* eslint-disable no-unused-vars */
+require("./instrument.js");
+
+const Sentry = require("@sentry/node");
 const express = require("express");
 const app = express();
 const Sequelize = require("sequelize");
@@ -142,12 +146,23 @@ async function calculateCompletionPercentage(courseId, studentId) {
   return completionPercentage;
 }
 
+Sentry.setupExpressErrorHandler(app);
+
 app.get("/set-language/:lang", (req, res) => {
-  const lang = req.params.lang;
-  res.cookie("i18n", lang); // Set the language in a cookie
-  i18n.setLocale(lang); // Set the language for the current session
-  console.log(i18n.getLocale());
-  res.redirect("back"); // Redirect to the previous page
+  try {
+    const lang = req.params.lang;
+    res.cookie("i18n", lang); // Set the language in a cookie
+    i18n.setLocale(lang); // Set the language for the current session
+    console.log(i18n.getLocale());
+    //res.redirect("back"); // Redirect to the previous page
+    // Manually throw an error to test Sentry integration
+    throw new Error("This is a test error to send to Sentry!");
+  } catch (err) {
+    // Capture the error in Sentry
+    Sentry.captureException(err);
+    console.error(err);
+    res.status(500).send("An error occurred while setting the language.");
+  }
 });
 
 app.get("/", async (request, response) => {
@@ -159,6 +174,10 @@ app.get("/", async (request, response) => {
     email: i18n.__("Email"),
     password: i18n.__("Password"),
   });
+});
+
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
 });
 
 app.get("/login", async (request, response) => {
@@ -343,11 +362,32 @@ app.get(
     const course = await Course.findByPk(courseId);
     console.log(course.id);
     const edu = await User.findByPk(course.eduId);
+
+    // Get the locale from i18n
+    const userLocale = i18n.getLocale(); // Get the current locale
+
+    // Create a date formatter for the user's locale
+    const dateFormatter = new Intl.DateTimeFormat(userLocale, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Set to true for 12-hour format
+    });
+
+    // Format the createdAt date
+    const formattedDate = dateFormatter.format(new Date(course.createdAt));
+
     response.render("viewcourse", {
       coursename: course.name,
       courseid: course.id,
+      date: formattedDate,
       chapters,
       eduname: edu.name,
+      enrollButton: i18n.__("Enroll"),
+      chapterTitle: i18n.__("Chapters"),
     });
   },
 );
@@ -363,11 +403,31 @@ app.get(
     const course = await Course.findByPk(courseId);
     console.log(course.id);
     const edu = await User.findByPk(course.eduId);
+
+    // Get the locale from i18n
+    const userLocale = i18n.getLocale(); // Get the current locale
+    console.log(userLocale);
+    // Create a date formatter for the user's locale
+    const dateFormatter = new Intl.DateTimeFormat(userLocale, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Set to true for 12-hour format
+    });
+    console.log(dateFormatter);
+    // Format the createdAt date
+    const formattedDate = dateFormatter.format(new Date(course.createdAt));
+
     response.render("viewencourse", {
       coursename: course.name,
       courseid: course.id,
+      date: formattedDate,
       chapters,
       eduname: edu.name,
+      chapterTitle: i18n.__("Chapters"),
     });
   },
 );
@@ -815,5 +875,10 @@ app.delete(
     }
   },
 );
+
+app.use(function onError(err, req, res, next) {
+  res.statusCode = 500;
+  res.end(res.sentry + "\n");
+});
 
 module.exports = app;

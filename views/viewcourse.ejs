@@ -20,7 +20,8 @@
 <body>
   <%- include('stuheader.ejs') %>
   <h1><%= coursename %></h1>
-  <%= eduname %>
+  <%= eduname %> <br>
+  <%= date %>
   <br><br>
   <form action="/enroll/<%= courseid %>" method="post">
     <button type="submit"><%= enrollButton %></button>

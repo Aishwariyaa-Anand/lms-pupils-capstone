@@ -11,5 +11,12 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
-  "rules": {}
+  "rules": {},
+  "ignorePatterns": ["dist/", "build/"],
+  "globals": {
+    "__unused_webpack_module": "readonly",
+    "exports": "readonly",
+    "__webpack_require__": "readonly",
+    "module": "readonly"
+  }
 }
