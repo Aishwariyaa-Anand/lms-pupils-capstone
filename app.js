@@ -154,9 +154,9 @@ app.get("/set-language/:lang", (req, res) => {
     res.cookie("i18n", lang); // Set the language in a cookie
     i18n.setLocale(lang); // Set the language for the current session
     console.log(i18n.getLocale());
-    //res.redirect("back"); // Redirect to the previous page
+    res.redirect("back"); // Redirect to the previous page
     // Manually throw an error to test Sentry integration
-    throw new Error("This is a test error to send to Sentry!");
+    //throw new Error("This is a test error to send to Sentry!");
   } catch (err) {
     // Capture the error in Sentry
     Sentry.captureException(err);
