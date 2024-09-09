@@ -33,12 +33,12 @@
         <button type="submit">Change Password</button>
     </form>
     </div>
-    <%- include('flash.ejs') %>
+    <%- include('../flash.ejs') %>
     <br>
     <% if (role === 'e') { %>
-      <%- include('edufooter.ejs') %>
+      <%- include('../edu/edufooter.ejs') %>
     <% } else { %>
-      <%- include('stufooter.ejs') %>
+      <%- include('../stu/stufooter.ejs') %>
     <% } %>
 </body>
 </html>

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <%- include('eduheader.ejs') %>
+    <%- include('../eduheader.ejs') %>
     <h1 class="head"><%= chapter.name %></h1>
     <br><br><hr>
     <h3><u><b>Pages</b></u></h3>
@@ -26,6 +26,6 @@
     <br><br><div style="text-align: right;">
         <a href="/createchapter/<%= chapter.id %>"><button>Create another chapter</button></a>
     </div>
-    <%- include('edufooter.ejs') %>
+    <%- include('../edufooter.ejs') %>
 </body>
 </html>

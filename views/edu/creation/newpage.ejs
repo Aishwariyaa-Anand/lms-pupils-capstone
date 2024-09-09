@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <%- include('eduheader.ejs') %>
+    <%- include('../eduheader.ejs') %>
     <h1 class="head"><%= newPageTitle %></h1>
     <form action="/chapters/<%= chapterId %>/pages" method="post">
         <label for="title"><%= titleLabel %></label><br><br>
@@ -16,6 +16,6 @@
         <textarea rows="8" cols="100" name="content"></textarea><br><br>
         <button type="submit"><%= submitButton %></button>
     </form>
-    <%- include('edufooter.ejs') %>
+    <%- include('../edufooter.ejs') %>
 </body>
 </html>

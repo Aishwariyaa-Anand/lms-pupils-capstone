@@ -18,18 +18,18 @@
   </style>
 </head>
 <body>
-  <%- include('stuheader.ejs') %>
-  <h1><%= coursename %></h1>
-  <%= eduname %> <br>
-  <%= date %>
+  <%- include('../stuheader.ejs') %>
+  <h1><%= coursename || 'No Name' %></h1>
+  <%= eduname || 'No Name' %> <br>
+  <%= date || 'No Name' %>
   <br><br>
   <form action="/enroll/<%= courseid %>" method="post">
-    <button type="submit"><%= enrollButton %></button>
+    <button type="submit"><%= enrollButton || 'No Name' %></button>
   </form>
-  <h3><u><b><%= chaptersTitle %></b></u></h3>
+  <h3><u><b><%= chapterTitle || 'No Name' %></b></u></h3>
   <% chapters.forEach(chapter => { %>
-    <button class="chapapa" disabled><%= chapter.name %></button><br><br>
+    <button class="chapapa" disabled><%= chapter.name || 'No Name' %></button><br><br>
   <% }); %>
-  <%- include('stufooter.ejs') %>
+  <%- include('../stufooter.ejs') %>
 </body>
 </html>

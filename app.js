@@ -190,7 +190,7 @@ app.get("/login", async (request, response) => {
 });
 
 app.get("/edusignup", async (request, response) => {
-  response.render("edusignup", {
+  response.render("auth/edusignup", {
     signUpAsEducator: i18n.__("Sign up as Educator"),
     nameLabel: i18n.__("Name"),
     emailLabel: i18n.__("Email"),
@@ -200,7 +200,7 @@ app.get("/edusignup", async (request, response) => {
 });
 
 app.get("/stusignup", async (request, response) => {
-  response.render("stusignup", {
+  response.render("auth/stusignup", {
     signUpAsStudent: i18n.__("Sign up as Student"),
     nameLabel: i18n.__("Name"),
     emailLabel: i18n.__("Email"),
@@ -218,7 +218,7 @@ app.get(
         eduId: request.user.id,
       },
     });
-    response.render("educator", {
+    response.render("edu/educator", {
       courses,
       myCourse: i18n.__("My Courses"),
       createCourse: i18n.__("Create course"),
@@ -248,7 +248,7 @@ app.get(
         },
       },
     });
-    response.render("student", {
+    response.render("stu/student", {
       courses,
       availCourses: i18n.__("Available Courses"),
       myCourses: i18n.__("My courses"),
@@ -261,13 +261,13 @@ app.get(
 app.get("/changepassedu", async (request, response) => {
   const userid = request.user.id;
   const user = await User.findByPk(userid);
-  response.render("changepass", { user, role: "e" });
+  response.render("auth/changepass", { user, role: "e" });
 });
 
 app.get("/changepassstu", async (request, response) => {
   const userid = request.user.id;
   const user = await User.findByPk(userid);
-  response.render("changepass", { user, role: "s" });
+  response.render("auth/changepass", { user, role: "s" });
 });
 
 app.get("/viewreports", isUser, async (request, response) => {
@@ -307,7 +307,7 @@ app.get("/viewreports", isUser, async (request, response) => {
     // Sort the courseReports by popularity score in descending order
     courseReports.sort((a, b) => b.popularityScore - a.popularityScore);
 
-    response.render("viewreport", {
+    response.render("edu/viewreport", {
       courseReports,
       welcomeMessage: i18n.__("Welcome!"),
       changePassword: i18n.__("Change Password"),
@@ -334,7 +334,7 @@ app.get(
   "/createcourse",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    response.render("createcourse", {
+    response.render("edu/creation/createcourse", {
       createCourseTitle: i18n.__("Create new course"),
       courseNameLabel: i18n.__("What is the name of the course?"),
       submitButton: i18n.__("Submit"),
@@ -347,7 +347,14 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const chapterId = request.params.chapterId;
-    response.render("newpage", { chapterId });
+    console.log(chapterId);
+    response.render("edu/creation/newpage", {
+      chapterId,
+      newPageTitle: i18n.__("New Page"),
+      titleLabel: i18n.__("Title"),
+      contentLabel: i18n.__("Content"),
+      submitButton: i18n.__("Submit"),
+    });
   },
 );
 
@@ -356,15 +363,24 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const courseId = request.params.courseId;
+    console.log(`Fetching chapters for courseId: ${courseId}`);
     const chapters = await Chapter.findAll({
       where: { courseId: courseId },
     });
     const course = await Course.findByPk(courseId);
-    console.log(course.id);
+    if (!course) {
+      throw new Error(`Course with id ${courseId} not found`);
+    }
+    console.log(`Course found: ${course.name} (ID: ${course.id})`);
     const edu = await User.findByPk(course.eduId);
+    if (!edu) {
+      throw new Error(`Educator with id ${course.eduId} not found`);
+    }
+    console.log(`Educator found: ${edu.name}`);
 
     // Get the locale from i18n
     const userLocale = i18n.getLocale(); // Get the current locale
+    console.log(`Current locale: ${userLocale}`);
 
     // Create a date formatter for the user's locale
     const dateFormatter = new Intl.DateTimeFormat(userLocale, {
@@ -379,8 +395,18 @@ app.get(
 
     // Format the createdAt date
     const formattedDate = dateFormatter.format(new Date(course.createdAt));
-
-    response.render("viewcourse", {
+    console.log(`Formatted Date: ${formattedDate}`);
+    if (!course) {
+      return response.status(404).send("Course not found.");
+    }
+    if (!edu) {
+      return response.status(404).send("Educator not found.");
+    }
+    if (!chapters) {
+      return response.status(404).send("Chapters not found.");
+    }
+    console.log("abc");
+    response.render("stu/viewing/viewcourse", {
       coursename: course.name,
       courseid: course.id,
       date: formattedDate,
@@ -396,39 +422,58 @@ app.get(
   "/viewencourse/:courseId",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    const courseId = request.params.courseId;
-    const chapters = await Chapter.findAll({
-      where: { courseId: courseId },
-    });
-    const course = await Course.findByPk(courseId);
-    console.log(course.id);
-    const edu = await User.findByPk(course.eduId);
+    try {
+      const courseId = request.params.courseId;
+      console.log(`Fetching chapters for courseId: ${courseId}`);
+      const chapters = await Chapter.findAll({
+        where: { courseId: courseId },
+      });
+      const course = await Course.findByPk(courseId);
+      if (!course) {
+        throw new Error(`Course with id ${courseId} not found`);
+      }
+      console.log(`Course found: ${course.name} (ID: ${course.id})`);
+      const edu = await User.findByPk(course.eduId);
+      if (!edu) {
+        throw new Error(`Educator with id ${course.eduId} not found`);
+      }
+      console.log(`Educator found: ${edu.name}`);
 
-    // Get the locale from i18n
-    const userLocale = i18n.getLocale(); // Get the current locale
-    console.log(userLocale);
-    // Create a date formatter for the user's locale
-    const dateFormatter = new Intl.DateTimeFormat(userLocale, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false, // Set to true for 12-hour format
-    });
-    console.log(dateFormatter);
-    // Format the createdAt date
-    const formattedDate = dateFormatter.format(new Date(course.createdAt));
+      // Get the locale from i18n
+      const userLocale = i18n.getLocale(); // Get the current locale
+      console.log(`Current locale: ${userLocale}`);
 
-    response.render("viewencourse", {
-      coursename: course.name,
-      courseid: course.id,
-      date: formattedDate,
-      chapters,
-      eduname: edu.name,
-      chapterTitle: i18n.__("Chapters"),
-    });
+      // Create a date formatter for the user's locale
+      const dateFormatter = new Intl.DateTimeFormat(userLocale, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Set to true for 12-hour format
+      });
+      console.log(dateFormatter);
+      // Format the createdAt date
+      const formattedDate = dateFormatter.format(new Date(course.createdAt));
+      console.log(`Formatted Date: ${formattedDate}`);
+
+      response.render("stu/viewing/viewencourse", {
+        coursename: course.name,
+        courseid: course.id,
+        date: formattedDate,
+        chapters,
+        eduname: edu.name,
+        chapterTitle: i18n.__("Chapters"),
+      });
+    } catch (err) {
+      // Capture the error in Sentry
+      Sentry.captureException(err);
+      console.error(`Error: ${err.message}`, err);
+      response
+        .status(500)
+        .send("An error occurred while setting the language.");
+    }
   },
 );
 
@@ -441,7 +486,7 @@ app.get(
     const pages = await Page.findAll({
       where: { chapterId: chapterId },
     });
-    response.render("viewchap", {
+    response.render("stu/viewing/viewchap", {
       chapname: chaps.name,
       chapdesc: chaps.desc,
       pages,
@@ -478,7 +523,7 @@ app.get(
         }),
       );
 
-      response.render("mycourses", {
+      response.render("stu/mycourses", {
         courses: coursesWithProgress,
       });
     } catch (error) {
@@ -504,7 +549,7 @@ app.get(
           studentId: studentId,
         },
       });
-      response.render("viewpage", {
+      response.render("stu/viewing/viewpage", {
         pagetitle: page.title,
         pagecont: page.content,
         pageid: page.id,
@@ -528,7 +573,7 @@ app.get(
       where: { courseId: courseId },
     });
     const pages = await Page.findAll();
-    response.render("educourse", {
+    response.render("edu/educourse", {
       coursename: course.name,
       chapters,
       pages,
@@ -543,7 +588,7 @@ app.get(
     const chapid = request.params.chapterId;
     const chapter = await Chapter.findByPk(chapid);
     const courseId = chapter.courseId;
-    response.render("createchapter", { courseId });
+    response.render("edu/creation/createchapter", { courseId });
   },
 );
 
@@ -687,7 +732,7 @@ app.post(
         eduId: request.user.id,
       });
       const courseId = createdCourse.id;
-      response.render("createchapter", { courseId });
+      response.render("edu/creation/createchapter", { courseId });
     } catch (error) {
       console.error(error);
       response.status(500).json({ error: "Internal Server Error" });
@@ -712,7 +757,7 @@ app.post(
       const pages = await Page.findAll({
         where: { chapterId: chapterid },
       });
-      response.render("createpage", { chapter, pages });
+      response.render("edu/creation/createpage", { chapter, pages });
     } catch (error) {
       console.error(error);
       response.status(500).json({ error: "Internal Server Error" });
@@ -736,7 +781,7 @@ app.post(
       const pages = await Page.findAll({
         where: { chapterId },
       });
-      response.render("createpage", { chapter, pages });
+      response.render("edu/creation/createpage", { chapter, pages });
     } catch (error) {
       console.error(error);
       response.status(500).json({ error: "Internal Server Error" });
@@ -763,12 +808,7 @@ app.post(
         studentId: studentId,
         courseId: courseId,
       });
-      response.render("viewencourse", {
-        courseId,
-        coursename: course.name,
-        eduname: edu.name,
-        chapters,
-      });
+      response.redirect(`/viewencourse/${courseId}`);
     } catch (error) {
       console.error(error);
       response.status(500).json({ error: "Internal Server Error" });
