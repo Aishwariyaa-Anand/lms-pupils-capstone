@@ -7,23 +7,26 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <h1 class="head"><%= welcomeMessage %></h1>
-    <div style="text-align: right;">
-        <a href="/changepassedu"><button><%= changePassword %></button><br><br></a>
-        <a href="/signout"><button style="background-color: crimson;" type="button"><%= signOut %></button></a>
-    </div>
-    <hr>
-    <div class="cards">
-        <% courseReports.forEach(course => { %>
-            <div class="card">
-                <div class="card-header"><%= course.courseName %></div>
-                <div class="card-body">
-                    <p><%= totalStudents %> <%= course.totalStudents %></p>
-                    <p><%= popularity %> <%= course.popularityScore %></p>
+    <nav>
+        <h1 class="head"><%= welcomeMessage %></h1>
+        <div style="text-align: right;">
+            <a href="/changepassedu"><button><%= changePassword %></button><br><br></a>
+            <a href="/signout"><button style="background-color: crimson;" type="button"><%= signOut %></button></a>
+        </div>
+    </nav>
+    <section>
+        <div class="cards">
+            <% courseReports.forEach(course => { %>
+                <div class="card">
+                    <div class="card-header"><%= course.courseName %></div>
+                    <div class="card-body">
+                        <p><%= totalStudents %> <%= course.totalStudents %></p>
+                        <p><%= popularity %> <%= course.popularityScore %></p>
+                    </div>
                 </div>
-            </div>
-        <% }); %>
-    </div>
+            <% }); %>
+        </div>
+    </section>
     <%- include('edufooter.ejs') %>
 </body>
 </html>

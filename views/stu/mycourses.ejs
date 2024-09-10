@@ -8,27 +8,29 @@
 </head>
 <body>
     <%- include('stuheader.ejs') %>
-    <h1 class="head">Courses enrolled</h1>
-    <div class="cards">
-        <% courses.forEach(course => { %>
-            <% if (course.enrolled) { %>
-                <div class="card">
-                    <div class="card-header"><%= course.name %></div>
-                    <div class="card-body">
-                        <% const completion = course.completionPercentage.toFixed(2); %>
-                        <% if (!isNaN(completion)) { %>
-                            <p>Completed: <%= completion %>%</p>
-                        <% } else { %>
-                            <p>Completed: 0%</p>
-                        <% } %>                        
+    <section>
+        <h1 class="head">Courses enrolled</h1>
+        <div class="cards">
+            <% courses.forEach(course => { %>
+                <% if (course.enrolled) { %>
+                    <div class="card">
+                        <div class="card-header"><%= course.name %></div>
+                        <div class="card-body">
+                            <% const completion = course.completionPercentage.toFixed(2); %>
+                            <% if (!isNaN(completion)) { %>
+                                <p>Completed: <%= completion %>%</p>
+                            <% } else { %>
+                                <p>Completed: 0%</p>
+                            <% } %>                        
+                        </div>
+                        <div class="card-footer">
+                            <a href="/viewencourse/<%= course.id %>"><button>Continue</button></a>
+                        </div>
                     </div>
-                    <div class="card-footer">
-                        <a href="/viewencourse/<%= course.id %>"><button>Continue</button></a>
-                    </div>
-                </div>
-            <% } %>
-        <% }); %>
-    </div>
+                <% } %>
+            <% }); %>
+        </div>
+    </section>
     <%- include('stufooter.ejs') %>
 </body>
 </html>

@@ -19,12 +19,14 @@
 </head>
 <body>
   <%- include('../stuheader.ejs') %>
-  <h1><%= chapname %></h1>
-  <p><%= chapdesc %></p>
-  <h3><u><b>Pages</b></u></h3>
-  <% pages.forEach(page => { %>
-    <a href="/viewpage/<%= page.id %>/<%= page.chapterId %>"><button class="chapapa"><%= page.title %></button></a><br><br>
-  <% }); %>
+  <section>
+    <h1><%= chapname %></h1>
+    <p><%= chapdesc %></p>
+    <h3><u><b>Pages</b></u></h3>
+    <% pages.forEach(page => { %>
+      <a href="/viewpage/<%= page.id %>/<%= page.chapterId %>"><button class="chapapa"><%= page.title %></button></a><br><br>
+    <% }); %>
+  </section>
   <%- include('../stufooter.ejs') %>
 </body>
 </html>

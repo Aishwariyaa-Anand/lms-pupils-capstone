@@ -1,8 +1,19 @@
-<h1 class="head">Welcome!</h1>
-<div style="text-align: right;">
-    <a href="/set-language/en"><button>English</button></a>
-    <a href="/set-language/fr"><button>Français</button></a><br><br>
-    <a href="/changepassedu"><button>Change Password</button><br><br></a>
-    <a href="/signout"><button style="background-color: crimson;" type="button">Sign Out</button></a>
-</div>
-<hr>
+<nav>
+    <h1 class="head">Welcome!</h1>
+    <div>
+        <label for="language-select" class="language-label">Select Language:</label>
+        <select id="language-select" class="language-dropdown" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+        </select>
+        <a href="/changepassstu"><button>Change Password</button></a>
+        <a href="/signout"><button style="background-color: crimson; color: black;">Sign Out</button></a>
+    </div>
+</nav>
+
+<script>
+    function changeLanguage(lang) {
+        // Redirect to the language setting route when the dropdown changes
+        window.location.href = '/set-language/' + lang;
+    }
+</script>

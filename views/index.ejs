@@ -5,50 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My LMS</title>
     <link rel="stylesheet" href="/styles.css">
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        td {
-            width: 50%;
-            vertical-align: middle;
-            text-align: center;
-            padding: 20px;
-        }
-
-        a {
-            color: rgb(79, 79, 248);
-        }
-    </style>
 </head>
 <body>
     <%- include('header.ejs') %>
-    <br><br><br>
     <table>
         <tr>
             <td>
-                <h3><%= signInEducator %></h3>
-                <form method="post" action="/edulog">
-                    <label for="email"><%= email %>:</label><br>
-                    <input type="email" name="email" id="email" placeholder="Enter your email" required><br><br>
-                    <label for="pwd"><%= password %>:</label><br>
-                    <input type="password" name="pwd" id="pwd" placeholder="Enter your password" required><br>
-                    <button type="submit">Sign in</button>
-                </form> 
-                <p>Do not have an account? <a href="/edusignup">Sign up</a></p>
+                <div class="cards">
+                <div class="card">
+                    <h3><%= signInEducator %></h3>
+                    <form method="post" action="/edulog">
+                        <label for="email"><%= email %>:</label><br>
+                        <input type="email" name="email" id="email" placeholder="Enter your email" required><br><br>
+                        <label for="pwd"><%= password %>:</label><br>
+                        <input type="password" name="pwd" id="pwd" placeholder="Enter your password" required><br>
+                        <button type="submit">Sign in</button>
+                    </form>
+                    <p>Do not have an account? <a href="/edusignup">Sign up</a></p>
+                </div></div>
             </td>
             <td>
-                <h3><%= signInStudent %></h3>
-                <form method="post" action="/stulog">
-                    <label for="email"><%= email %>:</label><br>
-                    <input type="email" name="email" id="email" placeholder="Enter your email" required><br><br>
-                    <label for="pwd"><%= password %>:</label><br>
-                    <input type="password" name="pwd" id="pwd" placeholder="Enter your password" required><br>
-                    <button type="submit">Sign in</button>
-                </form>
-                <p>Do not have an account? <a href="/stusignup">Sign up</a></p>
+                <div class="cards">
+                <div class="card">
+                    <h3><%= signInStudent %></h3>
+                    <form method="post" action="/stulog">
+                        <label for="email"><%= email %>:</label><br>
+                        <input type="email" name="email" id="email" placeholder="Enter your email" required><br><br>
+                        <label for="pwd"><%= password %>:</label><br>
+                        <input type="password" name="pwd" id="pwd" placeholder="Enter your password" required><br>
+                        <button type="submit">Sign in</button>
+                    </form>
+                    <p>Do not have an account? <a href="/stusignup">Sign up</a></p>
+                </div></div>
             </td>
         </tr>
     </table>

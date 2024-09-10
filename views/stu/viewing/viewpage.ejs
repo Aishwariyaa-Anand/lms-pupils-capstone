@@ -26,15 +26,17 @@
 </head>
 <body>
     <%- include('../stuheader.ejs') %>
-    <h1 class="head"><%= pagetitle %></h1>
-    <p><%= pagecont %></p>
-    <% if (completed) { %>
-      <p>This page is completed!</p>
-    <% } else { %>
-      <button onclick="markPageAsCompleted(<%= pageid %>, <%= chap %>); return false;" style="background-color: darkblue;">Mark As Completed</button>
-    <% } %>
-    <% let nextpg = pageid + 1; %>
-    <a href="/viewpage/<%= nextpg %>/<%= chap %>"><button type="submit">Next</button></a>
+    <section>
+      <h1 class="head"><%= pagetitle %></h1>
+      <p><%= pagecont %></p>
+      <% if (completed) { %>
+        <p>This page is completed!</p>
+      <% } else { %>
+        <button onclick="markPageAsCompleted(<%= pageid %>, <%= chap %>); return false;" style="background-color: rgb(67, 0, 139);">Mark As Completed</button>
+      <% } %>
+      <% let nextpg = pageid + 1; %>
+      <a href="/viewpage/<%= nextpg %>/<%= chap %>"><button type="submit">Next</button></a>
+    </section>
     <%- include('../stufooter.ejs') %>
 </body>
 </html>

@@ -8,19 +8,22 @@
 </head>
 <body>
     <%- include('../header.ejs') %>
-    <br><br><br>
-    <div class="signup">
-        <h3><%= signUpAsStudent %></h3>
-        <form action="/student" method="post">
-            <label for="stuname"><%= nameLabel %>:</label><br>
-            <input type="text" name="stuname" id="stuname" placeholder="<%= nameLabel %>" required><br><br>
-            <label for="stuemail"><%= emailLabel %>:</label><br>
-            <input type="email" name="stuemail" id="stuemail" placeholder="<%= emailLabel %>" required><br><br>
-            <label for="stupwd"><%= passwordLabel %>:</label><br>
-            <input type="password" name="stupwd" id="stupwd" placeholder="<%= passwordLabel %>" required><br><br>
-            <center><button type="submit"><%= submitButton %></button></center>
-        </form>
-    </div>
+    <section>
+        <div class="cards">
+            <div class="card">
+                <h3><%= signUpAsStudent %></h3>
+                <form action="/student" method="post">
+                    <label for="stuname"><%= nameLabel %>:</label><br>
+                    <input type="text" name="stuname" id="stuname" placeholder="<%= nameLabel %>" required><br><br>
+                    <label for="stuemail"><%= emailLabel %>:</label><br>
+                    <input type="email" name="stuemail" id="stuemail" placeholder="<%= emailLabel %>" required><br><br>
+                    <label for="stupwd"><%= passwordLabel %>:</label><br>
+                    <input type="password" name="stupwd" id="stupwd" placeholder="<%= passwordLabel %>" required><br><br>
+                    <center><button type="submit"><%= submitButton %></button></center>
+                </form>
+            </div>
+        </div>
+    </section>    
     <%- include('../flash.ejs') %>
 </body>
 </html>

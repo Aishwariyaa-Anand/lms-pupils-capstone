@@ -97,7 +97,6 @@ router.post("/change-password/:role", async (req, res) => {
     const user = await User.findByPk(userId);
     // Check if the old password provided matches the one stored in the database
     const isMatch = await bcrypt.compare(oldPassword, user.password);
-
     if (!isMatch) {
       req.flash("error", "Incorrect Old Password");
       return res.redirect("/changepassedu");
@@ -115,12 +114,12 @@ router.post("/change-password/:role", async (req, res) => {
     // Update the user's password in the database
     user.password = hashedPassword;
     await user.save();
-
-    if (req.params.role === "e") {
-      res.redirect("/educator");
+    console.log("x");
+    if (user.role === "e") {
+      res.redirect("/");
     }
-    if (req.params.role === "s") {
-      res.redirect("/student");
+    if (user.role === "s") {
+      res.redirect("/");
     }
   } catch (error) {
     console.error(error);

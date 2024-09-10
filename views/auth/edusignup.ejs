@@ -8,19 +8,21 @@
 </head>
 <body>
     <%- include('../header.ejs') %>
-    <br><br><br>
-    <div class="signup">
-        <h3><%= signUpAsEducator %></h3>
-        <form action="/educator" method="post">
-            <label for="eduname"><%= nameLabel %>:</label><br>
-            <input type="text" name="eduname" id="eduname" placeholder="<%= nameLabel %>" required><br><br>
-            <label for="eduemail"><%= emailLabel %>:</label><br> 
-            <input type="email" name="eduemail" id="eduemail" placeholder="<%= emailLabel %>" required><br><br>
-            <label for="edupwd"><%= passwordLabel %>:</label><br> 
-            <input type="password" name="edupwd" id="edupwd" placeholder="<%= passwordLabel %>" required><br><br>
-            <center><button type="submit"><%= submitButton %></button></center> 
-        </form>
-    </div>
+    <section>
+        <div class="cards">
+            <div class="card">
+                <h3><%= signUpAsEducator %></h3>
+                <form action="/educator" method="post">
+                    <label for="eduname"><%= nameLabel %>:</label><br>
+                    <input type="text" name="eduname" id="eduname" placeholder="<%= nameLabel %>" required><br><br>
+                    <label for="eduemail"><%= emailLabel %>:</label><br> 
+                    <input type="email" name="eduemail" id="eduemail" placeholder="<%= emailLabel %>" required><br><br>
+                    <label for="edupwd"><%= passwordLabel %>:</label><br> 
+                    <input type="password" name="edupwd" id="edupwd" placeholder="<%= passwordLabel %>" required><br><br>
+                    <center><button type="submit"><%= submitButton %></button></center> 
+                </form>
+            </div></div>
+    </section>
     <%- include('../flash.ejs') %>
 </body>
 </html>

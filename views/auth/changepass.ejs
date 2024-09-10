@@ -17,22 +17,26 @@
   </style>
 </head>
 <body>
-  <h1><center>Change your Password here</center></h1>
-    <br>
-    <div class="form-container">
-    <form action="/change-password/<%= role %>" method="post">
-        <label for="oldPassword">Old Password:</label>
-        <input type="password" id="oldPassword" name="oldPassword" required>
-        <br><br>
-        <label for="newPassword">New Password:</label>
-        <input type="password" id="newPassword" name="newPassword" required>
-        <br><br>
-        <label for="confirmPassword">Confirm New Password:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
-        <br><br>
-        <button type="submit">Change Password</button>
-    </form>
-    </div>
+  <nav>
+    <h1><center>Change your Password here</center></h1>
+  </nav>
+    <section>
+      <div class="form-container">
+        <form action="/change-password/<%= role %>" method="post">
+            <label for="oldPassword">Old Password:</label>
+            <input type="password" id="oldPassword" name="oldPassword" required>
+            <br><br>
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="newPassword" required>
+            <br><br>
+            <label for="confirmPassword">Confirm New Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+            <br><br>
+            <button type="submit">Change Password</button>
+        </form>
+      </div>      
+    </section>
+    
     <%- include('../flash.ejs') %>
     <br>
     <% if (role === 'e') { %>

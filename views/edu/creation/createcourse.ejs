@@ -8,13 +8,15 @@
 </head>
 <body>
     <%- include('../eduheader.ejs') %>
-    <h1 class="head"><%= createCourseTitle %></h1>
-    <br><br>
-    <form action="/courses" method="post">
-        <label for="coursename"><%= courseNameLabel %></label><br><br>
-        <input name="coursename" id="coursename" type="text" style="width: 400px"><br><br>
-        <button type="submit"><%= submitButton %></button>
-    </form>
+    <section>
+        <h1 class="head"><%= createCourseTitle %></h1>
+        <br><br>
+        <form action="/courses" method="post">
+            <label for="coursename"><%= courseNameLabel %></label><br><br>
+            <input name="coursename" id="coursename" type="text" style="width: 400px"><br><br>
+            <button type="submit"><%= submitButton %></button>
+        </form>    
+    </section>
     <%- include('../../flash.ejs') %>
     <%- include('../edufooter.ejs') %>
 </body>

@@ -8,24 +8,26 @@
 </head>
 <body>
     <%- include('../eduheader.ejs') %>
-    <h1 class="head"><%= chapter.name %></h1>
-    <br><br><hr>
-    <h3><u><b>Pages</b></u></h3>
-    <% if (pages && pages.length > 0) { %>
-        <ul>
-            <% pages.forEach(page => { %>
-                <li><a href="/pages/<%= page.id %>"><%= page.title %></a></li>
-            <% }); %>
-        </ul>
-    <% } else { %>
-        <p>No pages available for this chapter.</p>
-    <% } %>
-    <form>
-        <a href="/newpage/<%= chapter.id %>"><button type="button">Create a page</button></a>
-    </form>
-    <br><br><div style="text-align: right;">
-        <a href="/createchapter/<%= chapter.id %>"><button>Create another chapter</button></a>
-    </div>
+    <section>
+        <h1 class="head"><%= chapter.name %></h1>
+        <br><br><hr>
+        <h3><u><b>Pages</b></u></h3>
+        <% if (pages && pages.length > 0) { %>
+            <ul>
+                <% pages.forEach(page => { %>
+                    <li><a href="/pages/<%= page.id %>"><%= page.title %></a></li>
+                <% }); %>
+            </ul>
+        <% } else { %>
+            <p>No pages available for this chapter.</p>
+        <% } %>
+        <form>
+            <a href="/newpage/<%= chapter.id %>"><button type="button">Create a page</button></a>
+        </form>
+        <br><br><div style="text-align: right;">
+            <a href="/createchapter/<%= chapter.id %>"><button>Create another chapter</button></a>
+        </div>
+    </section>
     <%- include('../edufooter.ejs') %>
 </body>
 </html>

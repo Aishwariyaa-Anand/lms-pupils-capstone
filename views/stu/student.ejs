@@ -8,22 +8,28 @@
 </head>
 <body>
     <%- include('stuheader.ejs') %>
-    <div style="text-align: right;">
-        <a href="/mycourses"><button><%= myCourses %></button><br><br></a>
-    </div>
-    <p style="text-align: center;" id="avail"><%= availCourses %></p>
-    <div class="cards">
-        <% courses.forEach(course => { %>
-            <div class="card">
-                <div class="card-header"><%= course.name %></div>
-                <div class="card-footer">
-                    <a href="/viewcourse/<%= course.id %>"><button><%= viewCourse %></button></a>
+    <section>
+        <div style="text-align: right;">
+            <a href="/mycourses"><button><%= myCourses %></button><br><br></a>
+        </div>
+        <p style="text-align: center;" id="avail"><%= availCourses %></p>
+        <div class="cards">
+            <% courses.forEach(course => { %>
+                <div class="card">
+                    <div class="card-header"><%= course.name %></div>
+                    <div class="card-footer">
+                        <a href="/viewcourse/<%= course.id %>"><button><%= viewCourse %></button></a>
+                        
+                    </div>
                     <form action="/enroll/<%= course.id %>" method="post">
-                        <button type="submit"><%= enroll %></button>
+                            <button type="submit"><%= enroll %></button>
                     </form>
                 </div>
-            </div>
-        <% }); %>
+            <% }); %>
+        </div>
+    </section>
+    <div class="footer">
+        
     </div>
 </body>
 </html>

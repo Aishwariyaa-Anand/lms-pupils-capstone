@@ -19,13 +19,15 @@
 </head>
 <body>
   <%- include('../stuheader.ejs') %>
-  <h1><%= coursename %></h1>
-  <%= eduname %> <br>
-  <%= date %>
-  <h3><u><b><%= chapterTitle %></b></u></h3>
-  <% chapters.forEach(chapter => { %>
-    <a href="/viewchap/<%= chapter.id%>"><button class="chapapa"><%= chapter.name %></button></a><br><br>
-  <% }); %>
+  <section>
+    <h1><%= coursename %></h1>
+    <%= eduname %> <br>
+    <%= date %>
+    <h3><u><b><%= chapterTitle %></b></u></h3>
+    <% chapters.forEach(chapter => { %>
+      <a href="/viewchap/<%= chapter.id%>"><button class="chapapa"><%= chapter.name %></button></a><br><br>
+    <% }); %>
+  </section>
   <%- include('../stufooter.ejs') %>
 </body>
 </html>

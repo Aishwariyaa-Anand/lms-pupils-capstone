@@ -1,5 +1,17 @@
-<h1 class="head">Learning Management System</h1>
-<div style="text-align: right;">
-    <a href="/set-language/en"><button>English</button></a>
-    <a href="/set-language/fr"><button>Français</button></a>
-</div>
+<nav>
+    <h1 class="head">Learning Management System</h1>
+    <div>
+        <label for="language-select" class="language-label">Select Language:</label>
+        <select id="language-select" class="language-dropdown" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+        </select>
+    </div>
+</nav>
+
+<script>
+    function changeLanguage(lang) {
+        // Redirect to the language setting route when the dropdown changes
+        window.location.href = '/set-language/' + lang;
+    }
+</script>
