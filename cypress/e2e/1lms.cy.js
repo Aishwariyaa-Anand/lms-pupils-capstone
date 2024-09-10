@@ -8,7 +8,7 @@ describe("Authentication Tests", () => {
 
   it("should allow educator to log in", () => {
     cy.visit("http://localhost:4000");
-    cy.get("a").eq(2).click({ force: true });
+    cy.get("a").eq(0).click({ force: true });
     cy.url().should("include", "/edusignup");
     cy.get('input[name="eduname"]').type("edu");
     cy.get('input[name="eduemail"]').type("edu@gmail.com");
@@ -19,7 +19,7 @@ describe("Authentication Tests", () => {
 
   it("should allow student to log in", () => {
     cy.visit("http://localhost:4000");
-    cy.get("a").eq(3).click({ force: true });
+    cy.get("a").eq(1).click({ force: true });
     cy.url().should("include", "/stusignup");
     cy.get('input[name="stuname"]').type("stu");
     cy.get('input[name="stuemail"]').type("stu@gmail.com");
