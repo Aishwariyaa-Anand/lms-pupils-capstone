@@ -38,6 +38,11 @@ HTML, CSS, JavaScript
 
 `npx cypress open`
 
+## New Features Added
+This project now supports internationalization (i18n), allowing users to switch between multiple languages seamlessly! Additionally, the project has been Dockerized for easier deployment and consistency across environments.
+
+We've also integrated error logging using Sentry to monitor and track issues effectively, ensuring better debugging capabilities. Finally, CI/CD pipelines have been set up with comprehensive testing, ensuring code quality and smooth deployment.
+
 ### Any doubts on navigations through website, refer the video below
 
 [https://www.loom.com/share/4bc54e0969064344a56a1f2cd0b2eafe?sid=2cb80fcf-b387-4bf4-9fa8-c405175431fd](https://www.loom.com/share/ab97e5197c114c9e8185462cef6b4e21?sid=4017cee3-ca77-46d8-94f3-9ed58664e659)
