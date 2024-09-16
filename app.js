@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 require("./instrument.js");
+require("dotenv").config();
 
 const Sentry = require("@sentry/node");
 const express = require("express");
@@ -19,6 +20,8 @@ const saltRounds = 10;
 const authRoutes = require("./routes/auth");
 const studentRoutes = require("./routes/student");
 const educatorRoutes = require("./routes/educator");
+
+const { getAIResponse } = require("./routes/geminiai");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -116,5 +119,15 @@ app.use(function onError(err, req, res, next) {
 app.use(authRoutes);
 app.use(studentRoutes);
 app.use(educatorRoutes);
+
+app.post("/ask-ai", async (req, res) => {
+  const { query } = req.body;
+  try {
+    const answer = await getAIResponse(query); // Call the AI service to get a response
+    res.json({ answer });
+  } catch (error) {
+    res.status(500).json({ error: "Error with AI response" });
+  }
+});
 
 module.exports = app;

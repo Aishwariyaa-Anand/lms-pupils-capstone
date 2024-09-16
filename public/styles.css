@@ -224,3 +224,35 @@ p a:hover {
     width: 100%;
   }
 }
+
+.chatbot {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 300px;
+  background-color: #eed5ff;
+  padding: 20px;
+  border: 1px solid #e3bbff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.chatbot input[type="text"] {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.chatbot button {
+  width: 100%;
+  padding: 10px;
+  background-color: #b24ff8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.chatbot #response {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
