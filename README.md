@@ -44,7 +44,7 @@ This project now supports internationalization (i18n), allowing users to switch 
 
 We've also integrated error logging using Sentry to monitor and track issues effectively, ensuring better debugging capabilities. Finally, CI/CD pipelines have been set up with comprehensive testing, ensuring code quality and smooth deployment.
 
-Generative AI is integrated in the application. Branch 2
+Generative AI is integrated in the application. Branch 2.
 
 ### Any doubts on navigations through website, refer the video below
 
